@@ -29,7 +29,52 @@
             align-items: center;
             min-height: 100vh;
             transition: 0.3s;
+            overflow-x: hidden;
         }
+
+        /* القائمة الجانبية للمدربين */
+        #onlineList {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 180px;
+            background: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .online-header {
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(88, 129, 87, 0.3);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .trainer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #2ecc71;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
         .app-container {
             width: 95%;
@@ -39,6 +84,7 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
         .top-toolbar { display: flex; justify-content: center; margin-bottom: 20px; }
@@ -63,7 +109,6 @@
         }
 
         .logo-img { height: 100px; filter: drop-shadow(0 0 5px var(--primary-color)); }
-
         .header-text { text-align: left; }
         .header-text h2 { color: var(--primary-color); margin: 0; font-size: 1.5rem; }
         .header-text span { display: block; font-size: 1.1rem; opacity: 0.9; font-weight: bold; }
@@ -80,14 +125,7 @@
             font-size: 1rem;
         }
 
-        .toggle-password {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--primary-color);
-        }
+        .toggle-password { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--primary-color); }
 
         .action-btn {
             width: 100%;
@@ -101,13 +139,7 @@
             margin-top: 15px;
         }
 
-        .links-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
+        .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
         .nav-item {
             background: rgba(128, 128, 128, 0.05);
             border: 1px solid rgba(128, 128, 128, 0.1);
@@ -118,22 +150,28 @@
             font-size: 0.85rem;
             font-weight: bold;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: center;
-            transition: 0.3s;
-            text-align: center;
+            flex-direction: column; gap: 8px; align-items: center; transition: 0.3s; text-align: center;
         }
 
-        .nav-item i { font-size: 1.3rem; color: var(--primary-color); } /* تصغير حجم الأيقونات كما كان */
+        .nav-item i { font-size: 1.3rem; color: var(--primary-color); }
         .nav-item:hover { transform: translateY(-3px); border-color: var(--primary-color); background: rgba(88, 129, 87, 0.1); }
 
         .hidden { display: none; }
         #errorMessage { color: #ff5252; margin: 10px 0; display: none; font-weight: bold; text-align: center; }
         .copyright { text-align: center; margin-top: 25px; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 15px; }
+
+        @media (max-width: 800px) { #onlineList { position: static; width: auto; margin-bottom: 20px; transform: none; } }
     </style>
 </head>
 <body>
+
+<div id="onlineList" class="hidden">
+    <div class="online-header">
+        <span><i class="fas fa-users"></i> المتصلين الآن</span>
+        <span id="userCount">0</span>
+    </div>
+    <div id="trainersContainer"></div>
+</div>
 
 <div class="app-container">
     <div class="top-toolbar">
@@ -191,7 +229,7 @@
             <a href="https://www.canva.com/design/DAGuGH-sDEQ/DLiAkoEAL0MgAarpRTi3vg/view" target="_blank" class="nav-item">
                 <i class="fas fa-gears"></i> آلية التدريب
             </a>
-            <button class="nav-item" style="cursor: pointer; background: none; width: 100%; border-radius: 12px;" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
+            <button class="nav-item" style="cursor: pointer; background: none; width: 100%;" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
                 <i class="fas fa-eagle"></i> كتيب الونقات
             </button>
         </div>
@@ -210,7 +248,23 @@
     <div class="copyright">الحقوق محفوظة لـ <strong>ali_go</strong> &copy; 2026</div>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1C6pC9C_4V8Ya8dM6DlRhQt9LQrd3LMY",
+        authDomain: "ems-academy-gate.firebaseapp.com",
+        databaseURL: "https://ems-academy-gate-default-rtdb.firebaseio.com",
+        projectId: "ems-academy-gate",
+        storageBucket: "ems-academy-gate.firebasestorage.app",
+        messagingSenderId: "686866880902",
+        appId: "1:686866880902:web:d1a239e5776da47604b407"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
     const DATABASE = [
         { username: "ali_go", password: "qazwsx21", displayName: "Steev Martn" },
         { username: "mohammed", password: "123", displayName: "[جنرال]" },
@@ -225,39 +279,76 @@
         { username: "dema", password: "123", displayName: "معالي ديما" }
     ];
 
-    function togglePass() {
+    window.togglePass = function() {
         const p = document.getElementById('passInput'), e = document.getElementById('eyeIcon');
         p.type = p.type === "password" ? "text" : "password";
         e.classList.toggle('fa-eye'); e.classList.toggle('fa-eye-slash');
     }
 
-    function toggleTheme() {
+    window.toggleTheme = function() {
         const h = document.documentElement;
         h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     }
 
-    window.onload = function() {
-        if (localStorage.getItem('ems_logged') === 'true') showDash(localStorage.getItem('ems_name'));
-    };
-
-    function processLogin() {
+    window.processLogin = function() {
         const u = document.getElementById('userInput').value.toLowerCase().trim();
         const p = document.getElementById('passInput').value;
         const user = DATABASE.find(x => x.username.toLowerCase() === u && x.password === p);
         if (user) {
             localStorage.setItem('ems_logged', 'true');
             localStorage.setItem('ems_name', user.displayName);
+            localStorage.setItem('ems_user', user.username);
+            goOnline(user.username, user.displayName);
             showDash(user.displayName);
         } else { document.getElementById('errorMessage').style.display = 'block'; }
+    }
+
+    function goOnline(username, displayName) {
+        const userRef = ref(db, 'online_trainers/' + username);
+        set(userRef, { name: displayName, time: Date.now() });
+        onDisconnect(userRef).remove();
+    }
+
+    function listenOnline() {
+        const trainersRef = ref(db, 'online_trainers');
+        onValue(trainersRef, (snapshot) => {
+            const data = snapshot.val();
+            const container = document.getElementById('trainersContainer');
+            container.innerHTML = "";
+            let count = 0;
+            if (data) {
+                Object.values(data).forEach(trainer => {
+                    container.innerHTML += `<div class="trainer-item"><div class="online-dot"></div> ${trainer.name}</div>`;
+                    count++;
+                });
+            }
+            document.getElementById('userCount').innerText = count;
+        });
     }
 
     function showDash(name) {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('onlineList').classList.remove('hidden');
         document.getElementById('welcomeMsg').innerText = "أهلاً بك: " + name;
+        listenOnline();
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
+    window.logout = function() {
+        const username = localStorage.getItem('ems_user');
+        if(username) remove(ref(db, 'online_trainers/' + username));
+        localStorage.clear();
+        location.reload();
+    }
+
+    window.onload = function() {
+        if (localStorage.getItem('ems_logged') === 'true') {
+            const name = localStorage.getItem('ems_name');
+            const user = localStorage.getItem('ems_user');
+            goOnline(user, name);
+            showDash(name);
+        }
+    };
 </script>
 </body>
 </html>
