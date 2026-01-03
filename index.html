@@ -4,21 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بوابة أكاديمية الصحة | EMS Academy</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-black: #000000; 
             --card-bg: rgba(18, 18, 18, 0.98);
             --text-white: #ffffff;
             --primary-color: #588157; 
-            --glow: rgba(88, 129, 87, 0.2);
         }
 
         [data-theme="light"] {
             --bg-black: #f0f2f5;
             --card-bg: #ffffff;
             --text-white: #1a1a1a;
-            --primary-color: #588157;
         }
 
         body {
@@ -41,16 +39,9 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            position: relative;
         }
 
-        .top-toolbar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
+        .top-toolbar { display: flex; justify-content: center; margin-bottom: 20px; }
         .tool-btn {
             background: rgba(88, 129, 87, 0.1);
             border: 1px solid var(--primary-color);
@@ -58,8 +49,8 @@
             padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
-            font-size: 1.1rem;
+            font-size: 0.85rem;
+            font-weight: bold;
         }
 
         header {
@@ -67,23 +58,22 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+            border-bottom: 2px solid rgba(88, 129, 87, 0.2);
             padding-bottom: 15px;
         }
 
-        .logo-img { height: 90px; filter: drop-shadow(0 0 5px var(--primary-color)); }
+        .logo-img { height: 100px; filter: drop-shadow(0 0 5px var(--primary-color)); }
 
-        .header-titles { text-align: left; color: var(--primary-color); }
-        .header-titles h1 { font-size: 1.4rem; margin: 0; }
-        .header-titles span { display: block; font-size: 0.9rem; color: var(--text-white); opacity: 0.7; }
+        .header-text { text-align: left; }
+        .header-text h2 { color: var(--primary-color); margin: 0; font-size: 1.5rem; }
+        .header-text span { display: block; font-size: 1.1rem; opacity: 0.9; font-weight: bold; }
 
         .input-group { position: relative; width: 100%; margin: 10px 0; }
-
         input {
             width: 100%;
             padding: 14px;
             border-radius: 10px;
-            border: 1px solid rgba(128, 128, 128, 0.3);
+            border: 1px solid #333;
             background: rgba(128, 128, 128, 0.05);
             color: var(--text-white);
             box-sizing: border-box;
@@ -107,7 +97,6 @@
             border: none;
             border-radius: 10px;
             font-weight: bold;
-            font-size: 1rem;
             cursor: pointer;
             margin-top: 15px;
         }
@@ -115,98 +104,110 @@
         .links-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-top: 20px;
         }
 
         .nav-item {
             background: rgba(128, 128, 128, 0.05);
             border: 1px solid rgba(128, 128, 128, 0.1);
-            padding: 15px;
+            padding: 18px 10px;
             border-radius: 12px;
             color: var(--text-white);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            transition: 0.3s;
+            text-align: center;
         }
 
-        .nav-item:hover { border-color: var(--primary-color); }
+        .nav-item i { font-size: 1.3rem; color: var(--primary-color); } /* تصغير حجم الأيقونات كما كان */
+        .nav-item:hover { transform: translateY(-3px); border-color: var(--primary-color); background: rgba(88, 129, 87, 0.1); }
 
         .hidden { display: none; }
-
-        #errorMessage { color: #ff5252; font-size: 0.8rem; margin: 10px 0; display: none; }
-
-        .copyright { margin-top: 25px; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 15px; }
+        #errorMessage { color: #ff5252; margin: 10px 0; display: none; font-weight: bold; text-align: center; }
+        .copyright { text-align: center; margin-top: 25px; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 15px; }
     </style>
 </head>
-<body id="mainBody">
+<body>
 
-<div class="app-container" id="appContainer">
+<div class="app-container">
     <div class="top-toolbar">
-        <button class="tool-btn" onclick="toggleTheme()" title="تبديل الوضع">
-            <i class="fas fa-adjust"></i> تبديل الوضع (داكن/فاتح)
+        <button class="tool-btn" onclick="toggleTheme()">
+            <i class="fas fa-circle-half-stroke"></i> تبديل الوضع (داكن/فاتح)
         </button>
     </div>
 
     <header>
-        <img src="https://www2.0zz0.com/2025/12/22/17/297618659.png" class="logo-img" alt="Logo">
-        <div class="header-titles">
-            <h1>Ministry Of Health</h1>
+        <img src="https://www2.0zz0.com/2025/12/22/17/297618659.png" class="logo-img">
+        <div class="header-text">
+            <h2>Ministry Of Health</h2>
             <span>EMS Academy</span>
         </div>
     </header>
 
     <div id="loginScreen">
-        <h3 style="margin-bottom: 15px;">تسجيل الدخول</h3>
+        <h3 style="text-align: center; margin-bottom: 20px;"><i class="fas fa-lock"></i> تسجيل الدخول</h3>
         <input type="text" id="userInput" placeholder="اسم المستخدم">
-        
         <div class="input-group">
             <input type="password" id="passInput" placeholder="كلمة المرور">
-            <i class="fa-solid fa-eye toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
+            <i class="fa-solid fa-eye toggle-password" id="eyeIcon" onclick="togglePass()"></i>
         </div>
-
         <div id="errorMessage">بيانات الدخول غير صحيحة!</div>
-        
         <button class="action-btn" onclick="processLogin()">دخول</button>
-        
-        <p style="font-size: 0.75rem; margin-top: 15px;">
-            <a href="https://discord.com/users/704864503220666381" target="_blank" style="color: var(--primary-color); text-decoration: none;">
-                نسيت كلمة المرور؟ تواصل مع الدعم الفني
-            </a>
-        </p>
     </div>
 
     <div id="dashboard" class="hidden">
-        <h4 id="welcomeMsg" style="color: var(--primary-color); margin-bottom: 20px;"></h4>
+        <h4 id="welcomeMsg" style="color: var(--primary-color); text-align: center; margin-bottom: 20px;"></h4>
         <div class="links-grid">
-            <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153#gid=1567011153" target="_blank" class="nav-item">جدول الصحة العام</a>
-            <a href="https://docs.google.com/spreadsheets/d/1SYGLwafLP1i9mWBiSaLBorEK_i48EMkp4pOj0C_dMU8/edit?usp=sharin" target="_blank" class="nav-item">جدول الأكاديمية</a>
-            <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item">أعمال الأكاديمية</a>
-            <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item">كتيب المدرب</a>
-            <a href="https://forms.gle/Jh7Z5FTjddWxpHEw9" target="_blank" class="nav-item">إرفاق التقارير</a>
-            <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item">نتائج الونقات</a>
-            <a href="https://forms.gle/qpxWfgqT6mKoFvmg8" target="_blank" class="nav-item">الإجازة</a>
-            <a href="https://forms.gle/twE9sj2dfzqPK9rD7" target="_blank" class="nav-item">الاستقالة</a>
-            <a href="https://www.canva.com/design/DAGuGH-sDEQ/DLiAkoEAL0MgAarpRTi3vg/view" target="_blank" class="nav-item">آلية التدريب</a>
-            <button class="nav-item" style="grid-column: span 2; width: 100%; cursor: pointer; color: var(--primary-color); background: none;" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
-                🦅 كتيبات الونقات
+            <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item">
+                <i class="fas fa-file-medical"></i> جدول الصحة العام
+            </a>
+            <a href="https://docs.google.com/spreadsheets/d/1SYGLwafLP1i9mWBiSaLBorEK_i48EMkp4pOj0C_dMU8/edit?usp=sharing" target="_blank" class="nav-item">
+                <i class="fas fa-calendar-alt"></i> جدول الأكاديمية
+            </a>
+            <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item">
+                <i class="fas fa-clipboard-list"></i> أعمال الأكاديمية
+            </a>
+            <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item">
+                <i class="fas fa-user-md"></i> كتيب المدرب
+            </a>
+            <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item">
+                <i class="fas fa-star"></i> نتائج الونقات
+            </a>
+            <a href="https://forms.gle/Jh7Z5FTjddWxpHEw9" target="_blank" class="nav-item">
+                <i class="fas fa-file-upload"></i> إرفاق التقارير
+            </a>
+            <a href="https://forms.gle/qpxWfgqT6mKoFvmg8" target="_blank" class="nav-item">
+                <i class="fas fa-plane-departure"></i> الإجازة
+            </a>
+            <a href="https://forms.gle/twE9sj2dfzqPK9rD7" target="_blank" class="nav-item">
+                <i class="fas fa-user-slash"></i> الاستقالة
+            </a>
+            <a href="https://www.canva.com/design/DAGuGH-sDEQ/DLiAkoEAL0MgAarpRTi3vg/view" target="_blank" class="nav-item">
+                <i class="fas fa-gears"></i> آلية التدريب
+            </a>
+            <button class="nav-item" style="cursor: pointer; background: none; width: 100%; border-radius: 12px;" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
+                <i class="fas fa-eagle"></i> كتيب الونقات
             </button>
         </div>
 
-        <div id="wingsMenu" class="hidden" style="margin-top: 10px; padding: 10px; border-top: 1px solid rgba(128,128,128,0.2);">
+        <div id="wingsMenu" class="hidden" style="margin-top: 10px; border-top: 1px solid rgba(88, 129, 87, 0.3); padding-top: 10px;">
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <a href="https://www.canva.com/design/DAGxZG8Zx1I/QJiyoCTToBHWVYciTPh-Eg/view" target="_blank" class="nav-item" style="font-size: 0.7rem;">DC</a>
                 <a href="https://www.canva.com/design/DAGxZ-OVmF0/UDyZFB1e3wX5ox3vF6siZw/view" target="_blank" class="nav-item" style="font-size: 0.7rem;">HC</a>
-                <a href="https://www.canva.com/design/DAGxZpMbf58/zdoECcSWyNj1tNksZ0Bs4A/view" target="_blank" class="nav-item" style="font-size: 0.7rem;">IAC/OAC</a>
+                <a href="https://www.canva.com/design/DAGxZpMbf58/zdoECcSWyNj1tNksZ0Bs4A/view" target="_blank" class="nav-item" style="font-size: 0.7rem;">IAC</a>
             </div>
         </div>
 
-        <button class="action-btn" style="background: #333; margin-top: 20px;" onclick="location.reload()">تسجيل خروج</button>
+        <button class="action-btn" style="background: #333; margin-top: 25px;" onclick="logout()">تسجيل خروج</button>
     </div>
 
-    <div class="copyright">
-        الحقوق محفوظة لـ <strong>ali_go</strong> &copy; 2026
-    </div>
+    <div class="copyright">الحقوق محفوظة لـ <strong>ali_go</strong> &copy; 2026</div>
 </div>
 
 <script>
@@ -224,19 +225,10 @@
         { username: "dema", password: "123", displayName: "معالي ديما" }
     ];
 
-    function processLogin() {
-        const u = document.getElementById('userInput').value;
-        const p = document.getElementById('passInput').value;
-
-        const userAccount = DATABASE.find(acc => acc.username.toLowerCase() === u.toLowerCase() && acc.password === p);
-
-        if (userAccount) {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('welcomeMsg').innerText = "أهلاً بك: " + userAccount.displayName;
-        } else {
-            document.getElementById('errorMessage').style.display = "block";
-        }
+    function togglePass() {
+        const p = document.getElementById('passInput'), e = document.getElementById('eyeIcon');
+        p.type = p.type === "password" ? "text" : "password";
+        e.classList.toggle('fa-eye'); e.classList.toggle('fa-eye-slash');
     }
 
     function toggleTheme() {
@@ -244,13 +236,28 @@
         h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     }
 
-    function togglePasswordVisibility() {
-        const p = document.getElementById('passInput');
-        const i = document.getElementById('eyeIcon');
-        p.type = p.type === "password" ? "text" : "password";
-        i.classList.toggle('fa-eye-slash');
-    }
-</script>
+    window.onload = function() {
+        if (localStorage.getItem('ems_logged') === 'true') showDash(localStorage.getItem('ems_name'));
+    };
 
+    function processLogin() {
+        const u = document.getElementById('userInput').value.toLowerCase().trim();
+        const p = document.getElementById('passInput').value;
+        const user = DATABASE.find(x => x.username.toLowerCase() === u && x.password === p);
+        if (user) {
+            localStorage.setItem('ems_logged', 'true');
+            localStorage.setItem('ems_name', user.displayName);
+            showDash(user.displayName);
+        } else { document.getElementById('errorMessage').style.display = 'block'; }
+    }
+
+    function showDash(name) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('welcomeMsg').innerText = "أهلاً بك: " + name;
+    }
+
+    function logout() { localStorage.clear(); location.reload(); }
+</script>
 </body>
 </html>
