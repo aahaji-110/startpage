@@ -48,21 +48,16 @@
             overflow: hidden;
             position: fixed;
             top: 0;
-            white-space: nowrap;
             padding: 10px 0;
             border-bottom: 2px solid var(--primary);
             z-index: 999;
             font-weight: bold;
+            text-align: center; /* تم تثبيت النص في المنتصف */
         }
 
         .marquee-content {
             display: inline-block;
-            animation: marquee 25s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+            /* تم إزالة الأنيكيشن لجعل الكلمة ثابتة */
         }
 
         .controls-nav {
@@ -416,10 +411,9 @@
         const saved = localStorage.getItem('ems_user');
         if(saved) {
             const snap = await get(ref(db, 'users/' + saved));
-            if(snap.exists()) completeLogin({username: saved, displayName: snap.val().displayName, role: snap.val().role});
+            if(snap.exists()) completeLogin({username: saved, displayName: snap.val().displayName, role: saved.role});
         }
     };
 </script>
 </body>
 </html>
-
