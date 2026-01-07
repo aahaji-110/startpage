@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,218 +8,285 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-black: #000000; 
-            --card-bg: rgba(18, 18, 18, 0.98);
-            --text-white: #ffffff;
-            --primary-color: #588157; 
+            --primary: #5f8059; /* اللون الأخضر المعتمد في ملف index */
+            --secondary: #9fbf99; 
+            --bg-body: #121212; /* نفس خلفية index */
+            --bg-card: #1e1e1e; /* نفس بطاقات index */
+            --text-main: #ecf0f1;
+            --border: #333;
+            --input-bg: #1e1e1e !important;
+            --danger: #dc3545;
+            --shadow: 0 8px 30px rgba(0,0,0,0.4);
         }
 
-        [data-theme="light"] {
-            --bg-black: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-white: #1a1a1a;
+        body.light-mode {
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --text-main: #2c3e50;
+            --border: #d1d1d1;
+            --input-bg: #ffffff !important;
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-black);
-            color: var(--text-white);
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
             transition: 0.3s;
-            overflow: hidden; 
         }
 
-        /* شريط الترحيب العلوي */
-        .welcome-top-bar {
+        .announcement-bar {
             width: 100%;
-            background: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 6px 0;
-            font-size: 0.9rem;
-            font-weight: bold;
+            background: #000;
+            color: var(--primary);
+            overflow: hidden;
             position: fixed;
             top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            padding: 10px 0;
+            border-bottom: 2px solid var(--primary);
+            z-index: 999;
+            font-weight: bold;
         }
 
-        /* قائمة المتصلين الجانبية */
-        #onlineList {
-            position: fixed; right: 20px; top: 50px; width: 180px;
-            background: var(--card-bg); border: 1px solid var(--primary-color);
-            border-radius: 12px; padding: 12px; z-index: 100;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
         }
 
-        .online-header { font-size: 0.8rem; border-bottom: 1px solid rgba(88, 129, 87, 0.3); padding-bottom: 5px; margin-bottom: 10px; color: var(--primary-color); display: flex; justify-content: space-between; font-weight: bold; }
-        .trainer-item { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; margin-bottom: 6px; }
-        .online-dot { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71; }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
 
-        /* الحاوية الرئيسية (طولية وكبيرة) */
-        .app-container {
-            width: 90%;
-            max-width: 520px; /* عرض متوازن للطول */
-            background: var(--card-bg);
-            border: 1px solid rgba(88, 129, 87, 0.3);
-            border-radius: 20px;
-            padding: 25px 35px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
-            position: relative;
-            margin-top: 20px;
+        .controls-nav {
+            position: fixed;
+            left: 20px;
+            top: 60px;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; gap: 15px; z-index: 1001;
         }
 
-        .top-toolbar { display: flex; justify-content: center; margin-bottom: 15px; }
-        .tool-btn {
-            background: rgba(88, 129, 87, 0.1); border: 1px solid var(--primary-color);
-            color: var(--primary-color); padding: 6px 14px; border-radius: 8px;
-            cursor: pointer; font-size: 0.8rem; font-weight: bold; font-family: 'Cairo';
+        .nav-btn {
+            font-size: 1.4rem; 
+            color: var(--text-main); 
+            cursor: pointer;
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            padding: 8px;
+            border-radius: 10px;
+            transition: 0.3s;
+            box-shadow: var(--shadow);
+        }
+        
+        .nav-btn:hover { color: var(--primary); }
+
+        input, select, textarea {
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px;
+            border: 1px solid var(--border) !important; 
+            background-color: var(--input-bg) !important; 
+            color: var(--text-main) !important; 
+            font-family: 'Cairo';
+            margin-bottom: 10px; 
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
         }
 
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-            border-bottom: 1px solid rgba(88, 129, 87, 0.2); 
-            padding-bottom: 15px; 
+        input:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 5px rgba(95, 128, 89, 0.5);
         }
-        .logo-img { height: 85px; filter: drop-shadow(0 0 5px var(--primary-color)); }
-        .header-text { text-align: left; }
-        .header-text h2 { color: var(--primary-color); margin: 0; font-size: 1.4rem; font-weight: 900; line-height: 1.1; }
-        .header-text span { display: block; font-size: 1rem; opacity: 0.9; font-weight: bold; }
 
-        /* شاشة الدخول والبصمة */
-        .input-group { position: relative; width: 100%; margin: 10px 0; }
-        input {
-            width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #333;
-            background: rgba(128, 128, 128, 0.05); color: var(--text-white);
-            box-sizing: border-box; font-size: 1rem; font-family: 'Cairo';
+        .container {
+            background: var(--bg-card); padding: 30px; border-radius: 25px;
+            box-shadow: var(--shadow); width: 95%;
+            max-width: 420px; text-align: center; border: 1px solid var(--border); margin-top: 50px;
         }
-        .toggle-password { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--primary-color); }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px;
+        }
+
+        .logo-img { max-width: 90px; height: auto; }
 
         .action-btn {
-            width: 100%; padding: 13px; background: var(--primary-color);
-            color: #fff; border: none; border-radius: 10px; font-weight: bold;
-            cursor: pointer; margin-top: 10px; font-family: 'Cairo'; font-size: 1rem;
+            width: 100%; padding: 14px; background: var(--primary);
+            color: white; border: none; border-radius: 10px;
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            transition: 0.3s;
+        }
+        .action-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* شاشة البصمة */
+        .fp-wrapper {
+            position: relative; width: 100px; height: 100px;
+            margin: 20px auto; display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        #fingerprintScanner { text-align: center; padding: 20px; }
-        .fingerprint-icon {
-            font-size: 5rem; color: var(--primary-color); cursor: pointer;
-            transition: 0.3s; animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .fingerprint-icon { font-size: 5rem; color: var(--border); transition: 0.5s; }
 
-        /* شبكة الروابط (عمودين) */
-        .links-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-top: 10px; 
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--primary); box-shadow: 0 0 15px var(--primary);
+            display: none; z-index: 10;
         }
+
+        .fp-active .fingerprint-icon { color: var(--primary); text-shadow: 0 0 20px var(--primary); }
+        .fp-active .scan-line { display: block; animation: scanning 1s linear infinite; }
+
+        @keyframes scanning {
+            0% { top: 0; } 50% { top: 100%; } 100% { top: 0; }
+        }
+
+        .success-msg { color: var(--primary); font-weight: bold; margin-top: 10px; font-size: 0.9rem; display: none; }
+
+        .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .nav-item {
-            background: rgba(128, 128, 128, 0.05); border: 1px solid rgba(128, 128, 128, 0.1);
-            padding: 15px 10px; border-radius: 12px; color: var(--text-white);
-            text-decoration: none; font-size: 0.8rem; font-weight: bold;
-            display: flex; flex-direction: column; gap: 8px; align-items: center; transition: 0.2s; text-align: center;
+            background: rgba(95, 128, 89, 0.1); border: 1px solid var(--border);
+            padding: 12px 5px; border-radius: 15px; color: var(--text-main);
+            text-decoration: none; font-size: 0.85rem; font-weight: bold;
+            display: flex; flex-direction: column; gap: 6px; align-items: center; transition: 0.3s;
         }
-        .nav-item i { font-size: 1.3rem; color: var(--primary-color); }
-        .nav-item:hover { transform: translateY(-3px); border-color: var(--primary-color); background: rgba(88, 129, 87, 0.12); }
+        .nav-item:hover { border-color: var(--primary); transform: scale(1.02); }
+        .nav-item i { color: var(--primary); font-size: 1.2rem; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 3000;
+        }
+
+        .modal-content {
+            width: 90%; max-width: 500px; max-height: 85vh;
+            background: var(--bg-card); border: 2px solid var(--primary);
+            border-radius: 20px; padding: 25px; overflow-y: auto; position: relative;
+        }
+
+        #onlineList {
+            position: fixed; right: 20px; top: 60px; width: 160px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-right: 4px solid var(--primary); border-radius: 10px;
+            padding: 10px; font-size: 0.8rem; z-index: 100; box-shadow: var(--shadow);
+        }
+
+        .user-card {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            padding: 12px; border-radius: 12px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; text-align: right;
+        }
 
         .hidden { display: none !important; }
+        .footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.75rem; color: #888; }
+        .footer strong { color: var(--primary); }
         
-        .copyright { text-align: center; margin-top: auto; padding-top: 15px; font-size: 0.7rem; opacity: 0.6; border-top: 1px solid rgba(128,128,128,0.1); }
-        .copyright a { color: var(--primary-color); text-decoration: none; font-weight: bold; cursor: pointer; }
-
-        @media (max-width: 800px) { 
-            #onlineList { position: static; width: auto; margin: 10px 0; }
-            body { overflow-y: auto; height: auto; }
-            .app-container { margin: 50px 0; }
-        }
+        #wingsMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="welcome-top-bar">أهلاً وسهلاً بك في أكاديمية الصحة</div>
+<div class="announcement-bar">
+    <div class="marquee-content" id="newsContent">مرحباً بكم في أكاديمية الصحة</div>
+</div>
+
+<div class="controls-nav">
+    <button id="settingsBtn" class="nav-btn hidden" onclick="openAdminModal()"><i class="fas fa-user-gear"></i></button>
+    <button class="nav-btn" onclick="toggleTheme()"><i class="fas fa-circle-half-stroke"></i></button>
+</div>
+
+<div id="adminModal" class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal-content">
+        <h3 style="color: var(--primary); text-align: center; margin-top:0;">إدارة شؤون المدربين</h3>
+        <input type="text" id="addUsername" placeholder="اسم المستخدم (Username)" autocomplete="off">
+        <input type="text" id="addPassword" placeholder="كلمة المرور" autocomplete="off">
+        <input type="text" id="addDisplayName" placeholder="الاسم الظاهر" autocomplete="off">
+        <select id="addRole">
+            <option value="trainer">مدرب</option>
+            <option value="admin">مدير نظام</option>
+        </select>
+        <button class="action-btn" onclick="addNewTrainer()">حفظ الحساب</button>
+        <h4 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 25px;">قائمة المدربين الحالية:</h4>
+        <div id="adminTrainersList"></div>
+    </div>
+</div>
 
 <div id="onlineList" class="hidden">
-    <div class="online-header"><span>المتصلين الآن</span> <span id="userCount">0</span></div>
+    <div style="color: var(--primary); font-weight: bold; margin-bottom: 5px;">المتصلين: <span id="userCount">0</span></div>
     <div id="trainersContainer"></div>
 </div>
 
-<div class="app-container">
-    <div class="top-toolbar">
-        <button class="tool-btn" onclick="toggleTheme()"><i class="fas fa-circle-half-stroke"></i> تبديل المظهر</button>
-    </div>
-
+<div class="container">
     <header>
         <img src="https://www2.0zz0.com/2025/12/22/17/297618659.png" class="logo-img">
-        <div class="header-text">
-            <h2>Ministry Of Health</h2>
-            <span>EMS Academy</span>
+        <div style="text-align:left">
+            <h2 style="margin:0; font-size:1.1rem; letter-spacing: 1px;">Ministry Of Health</h2>
+            <span style="color:var(--primary); font-weight: bold; font-size:0.8rem;">EMS Academy</span>
         </div>
     </header>
 
     <div id="loginScreen">
-        <input type="text" id="userInput" placeholder="اسم المستخدم">
-        <div class="input-group">
-            <input type="password" id="passInput" placeholder="كلمة المرور">
-            <i class="fa-solid fa-eye toggle-password" onclick="togglePass()"></i>
+        <input type="text" id="userInput" placeholder="اسم المستخدم" autocomplete="off">
+        <div style="position:relative;">
+            <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
+            <i class="fa-solid fa-eye" style="position:absolute; left:15px; top:15px; color:var(--primary); cursor:pointer;" onclick="togglePass('passInput')"></i>
         </div>
-        <div id="errorMessage" class="hidden" style="color:#ff5252; text-align:center; font-weight:bold; font-size:0.8rem; margin: 5px;">بيانات الدخول غير صحيحة!</div>
+        <div id="errorMsg" style="color:var(--danger); display:none; margin-bottom:10px; font-size: 0.8rem;">بيانات الدخول غير صحيحة</div>
         <button class="action-btn" onclick="checkCredentials()">دخول</button>
     </div>
 
     <div id="fingerprintScanner" class="hidden">
-        <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">يرجى وضع بصمتك للتحقق</p>
-        <i class="fas fa-fingerprint fingerprint-icon" onclick="verifyFingerprint()"></i>
-        <p id="scanningMsg" style="font-size: 0.9rem; margin-top: 15px; color: var(--primary-color); min-height: 25px;"></p>
+        <div class="fp-wrapper" id="fpWrapper" onclick="verifyFingerprint()">
+            <div class="scan-line"></div>
+            <i class="fas fa-fingerprint fingerprint-icon"></i>
+        </div>
+        <p id="fpText">ضع بصمتك للتحقق</p>
+        <p id="fpStatus" class="success-msg"></p>
     </div>
 
     <div id="dashboard" class="hidden">
-        <h4 id="welcomeMsg" style="color: var(--primary-color); text-align: center; margin: 0 0 15px 0; font-size: 1rem; font-weight: 900;"></h4>
+        <p id="welcomeMsg" style="font-weight:900; color:var(--primary); margin-bottom:20px;"></p>
         <div class="links-grid">
             <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
             <a href="https://docs.google.com/spreadsheets/d/1SYGLwafLP1i9mWBiSaLBorEK_i48EMkp4pOj0C_dMU8/edit?usp=sharing" target="_blank" class="nav-item"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
             <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
             <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item"><i class="fas fa-user-md"></i> كتيب المدرب</a>
             <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item"><i class="fas fa-star"></i> نتائج الونقات</a>
-            <a href="https://forms.gle/Jh7Z5FTjddWxpHEw9" target="_blank" class="nav-item"><i class="fas fa-file-upload"></i> إرفاق التقارير</a>
-            <a href="https://forms.gle/qpxWfgqT6mKoFvmg8" target="_blank" class="nav-item"><i class="fas fa-plane-departure"></i> الإجازة</a>
+            <a href="https://forms.gle/Jh7Z5FTjddWxpHEw9" target="_blank" class="nav-item"><i class="fas fa-file-upload"></i> التقارير</a>
+            <a href="https://forms.gle/qpxWfgqT6mKoFvmg8" target="_blank" class="nav-item"><i class="fas fa-plane-departure"></i> الإجازات</a>
             <a href="https://forms.gle/twE9sj2dfzqPK9rD7" target="_blank" class="nav-item"><i class="fas fa-user-slash"></i> الاستقالة</a>
             <a href="https://www.canva.com/design/DAGuGH-sDEQ/DLiAkoEAL0MgAarpRTi3vg/view" target="_blank" class="nav-item"><i class="fas fa-gears"></i> آلية التدريب</a>
-            <button class="nav-item" style="cursor: pointer; background: none; width: 100%; font-family: 'Cairo';" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
-                <i class="fas fa-eagle"></i> كتيب الونقات
+            <button class="nav-item" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
+                <i class="fas fa-shield-halved"></i> كتيب الونقات
             </button>
         </div>
-
-        <div id="wingsMenu" class="hidden" style="margin-top: 12px; border-top: 1px solid rgba(88, 129, 87, 0.3); padding-top: 10px;">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                <a href="https://aahaji-110.github.io/dispatch/" target="_blank" class="nav-item" style="font-size: 0.7rem; padding: 10px;">DC</a>
-                <a href="https://aahaji-110.github.io/HC/" target="_blank" class="nav-item" style="font-size: 0.7rem; padding: 10px;">HC</a>
-                <a href="https://aahaji-110.github.io/IAC-OAC/" target="_blank" class="nav-item" style="font-size: 0.7rem; padding: 10px;">IAC/OAC</a>
-                <a href="https://aahaji-110.github.io/co/" target="_blank" class="nav-item" style="font-size: 0.7rem; padding: 10px;">CO</a>
-                <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item" style="font-size: 0.7rem; padding: 10px;">AIR</a>
-            </div>
+        <div id="wingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:10px;">
+            <a href="https://aahaji-110.github.io/dispatch/" target="_blank" class="nav-item">DC</a>
+            <a href="https://aahaji-110.github.io/HC/" target="_blank" class="nav-item">HC</a>
+            <a href="https://aahaji-110.github.io/IAC-OAC/" target="_blank" class="nav-item">IAC</a>
+            <a href="https://aahaji-110.github.io/co/" target="_blank" class="nav-item">CO</a>
+            <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item">AIR</a>
         </div>
-
-        <button class="action-btn" style="background: #333; margin-top: 15px; padding: 10px;" onclick="logout()">خروج من النظام</button>
+        <button class="action-btn" style="background: var(--primary); margin-top:20px; font-size:0.8rem;" onclick="logout()">تسجيل الخروج</button>
     </div>
 
-    <div class="copyright">الحقوق محفوظة لـ <a href="mailto:aahaji.110@gmail.com">Discord ali_go</a> &copy; 2026</div>
+    <div class="footer">
+        بوابة الإدارة الرقمية | الحقوق محفوظة لـ: <strong>علي الحاجي</strong> <br>
+        الدسكورد <strong>ali_go</strong>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, onDisconnect, remove, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC1C6pC9C_4V8Ya8dM6DlRhQt9LQrd3LMY",
@@ -233,99 +300,125 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    let sessionUser = null;
 
-    const DATABASE = [
-        { username: "ali_go", password: "qazwsx21", displayName: "FTO Ali" },
-        { username: "mohammed", password: "123", displayName: "[Deputy mohammed]" },
-        { username: "peka", password: "123", displayName: "FTO Shatha" },
-        { username: "halenzi", password: "123", displayName: "FTO Hala Alenzi" },
-        { username: "noodi", password: "123", displayName: "Supervisor Noodi" },
-        { username: "abdvilah", password: "123", displayName: "FTO AbdvIlah" },
-        { username: "abud7im", password: "123", displayName: "FTO ABU D7IM" },
-        { username: "rema", password: "123", displayName: "Commander Rema" },
-        { username: "wa15", password: "123", displayName: "FTO Waleed" },
-        { username: "deema", password: "123", displayName: "EMS CHIEF DEEMA" }
-    ];
+    window.toggleTheme = () => {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    };
 
-    let pendingUser = null;
-
-    window.togglePass = function() {
-        const p = document.getElementById('passInput');
+    window.togglePass = (id) => {
+        const p = document.getElementById(id);
         p.type = p.type === "password" ? "text" : "password";
-    }
+    };
 
-    window.toggleTheme = function() {
-        const h = document.documentElement;
-        h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    }
+    onValue(ref(db, 'announcements'), (s) => {
+        let text = ""; s.forEach(c => { text += " • " + c.val(); });
+        document.getElementById('newsContent').innerText = text || "مرحباً بكم في أكاديمية الصحة";
+    });
 
-    window.checkCredentials = function() {
+    window.checkCredentials = async function() {
         const u = document.getElementById('userInput').value.toLowerCase().trim();
         const p = document.getElementById('passInput').value;
-        const user = DATABASE.find(x => x.username.toLowerCase() === u && x.password === p);
-        if (user) {
-            pendingUser = user;
+        const snap = await get(ref(db, 'users/' + u));
+        if (snap.exists() && snap.val().password === p) {
+            sessionUser = { username: u, displayName: snap.val().displayName, role: snap.val().role };
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('fingerprintScanner').classList.remove('hidden');
-        } else {
-            document.getElementById('errorMessage').classList.remove('hidden');
-        }
-    }
+        } else { document.getElementById('errorMsg').style.display = 'block'; }
+    };
 
-    window.verifyFingerprint = function() {
-        const msg = document.getElementById('scanningMsg');
-        msg.innerText = "جاري قراءة البيانات الحيوية...";
+    window.verifyFingerprint = () => {
+        const wrapper = document.getElementById('fpWrapper');
+        const text = document.getElementById('fpText');
+        const status = document.getElementById('fpStatus');
+        wrapper.classList.add('fp-active');
+        text.innerText = "جاري مطابقة الهوية...";
         setTimeout(() => {
-            msg.innerText = "تم التحقق! أهلاً بك " + pendingUser.displayName;
+            wrapper.classList.remove('fp-active');
+            text.classList.add('hidden');
+            status.style.display = "block";
+            status.innerText = "تم التأكد من هوية المدرب: " + sessionUser.displayName;
             setTimeout(() => {
-                localStorage.setItem('ems_logged', 'true');
-                localStorage.setItem('ems_name', pendingUser.displayName);
-                localStorage.setItem('ems_user', pendingUser.username);
-                completeLogin(pendingUser.username, pendingUser.displayName);
-            }, 800);
-        }, 1200);
+                logActivity(sessionUser.username, sessionUser.displayName);
+                completeLogin(sessionUser);
+            }, 1000);
+        }, 2000);
+    };
+
+    function logActivity(u, n) {
+        push(ref(db, 'logs'), { user: u, name: n, time: new Date().toLocaleString('ar-SA'), device: navigator.userAgent.includes("Mobi") ? "جوال" : "كمبيوتر" });
     }
 
-    function completeLogin(username, displayName) {
-        document.getElementById('loginScreen').classList.add('hidden');
+    function completeLogin(user) {
+        localStorage.setItem('ems_user', user.username);
+        document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + user.displayName;
         document.getElementById('fingerprintScanner').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('onlineList').classList.remove('hidden');
-        document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + displayName;
-        
-        const userRef = ref(db, 'online_trainers/' + username);
-        set(userRef, { name: displayName, time: Date.now() });
-        onDisconnect(userRef).remove();
-        listenOnline();
-    }
-
-    function listenOnline() {
-        onValue(ref(db, 'online_trainers'), (snapshot) => {
-            const container = document.getElementById('trainersContainer');
-            container.innerHTML = ""; let count = 0;
-            if (snapshot.val()) {
-                Object.values(snapshot.val()).forEach(t => {
-                    container.innerHTML += `<div class="trainer-item"><div class="online-dot"></div> ${t.name}</div>`;
-                    count++;
-                });
-            }
+        if (user.role === "admin" || user.username === "ali_go") {
+            document.getElementById('settingsBtn').classList.remove('hidden');
+            loadTrainersList();
+        }
+        const sRef = ref(db, 'online_trainers/' + user.username);
+        set(sRef, { name: user.displayName });
+        onDisconnect(sRef).remove();
+        onValue(ref(db, 'online_trainers'), (s) => {
+            const container = document.getElementById('trainersContainer'); container.innerHTML = "";
+            let count = 0;
+            s.forEach(c => {
+                container.innerHTML += `<div style="margin-bottom:5px;"><span style="color: #2ecc71; margin-left: 5px;">●</span>${c.val().name}</div>`;
+                count++;
+            });
             document.getElementById('userCount').innerText = count;
         });
     }
 
-    window.logout = function() {
-        const username = localStorage.getItem('ems_user');
-        if(username) remove(ref(db, 'online_trainers/' + username));
-        localStorage.clear();
-        location.reload();
+    function loadTrainersList() {
+        onValue(ref(db, 'users'), (snap) => {
+            const listDiv = document.getElementById('adminTrainersList');
+            listDiv.innerHTML = "";
+            snap.forEach((child) => {
+                const data = child.val();
+                listDiv.innerHTML += `<div class="user-card"><div><strong>${data.displayName}</strong><br><small style="color:var(--primary)">${child.key} | ${data.role}</small></div><div><i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:15px;" onclick="fillTrainerData('${child.key}', '${data.password}', '${data.displayName}', '${data.role}')"></i><i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteUser('${child.key}')"></i></div></div>`;
+            });
+        });
     }
 
-    window.onload = function() {
-        if (localStorage.getItem('ems_logged') === 'true') {
-            completeLogin(localStorage.getItem('ems_user'), localStorage.getItem('ems_name'));
+    window.fillTrainerData = (u, p, d, r) => {
+        document.getElementById('addUsername').value = u;
+        document.getElementById('addPassword').value = p;
+        document.getElementById('addDisplayName').value = d;
+        document.getElementById('addRole').value = r;
+    };
+
+    window.addNewTrainer = () => {
+        const u = document.getElementById('addUsername').value.toLowerCase().trim();
+        const p = document.getElementById('addPassword').value;
+        const d = document.getElementById('addDisplayName').value;
+        const r = document.getElementById('addRole').value;
+        if(u && p && d) set(ref(db, 'users/' + u), { password: p, displayName: d, role: r });
+    };
+
+    window.deleteUser = (u) => { if(confirm("حذف " + u + "؟")) remove(ref(db, 'users/' + u)); };
+
+    window.logout = () => {
+        remove(ref(db, 'online_trainers/' + localStorage.getItem('ems_user')));
+        localStorage.clear();
+        location.reload();
+    };
+
+    window.openAdminModal = () => document.getElementById('adminModal').style.display = 'flex';
+    window.closeModalOutside = (e) => { if(e.target.id === 'adminModal') document.getElementById('adminModal').style.display = 'none'; };
+
+    window.onload = async () => {
+        if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        const saved = localStorage.getItem('ems_user');
+        if(saved) {
+            const snap = await get(ref(db, 'users/' + saved));
+            if(snap.exists()) completeLogin({username: saved, displayName: snap.val().displayName, role: snap.val().role});
         }
     };
 </script>
 </body>
 </html>
-
