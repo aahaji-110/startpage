@@ -217,7 +217,7 @@
         </div>
     </header>
 
-    <div id="loginScreen">
+    <div id="loginScreen" class="hidden">
         <input type="text" id="userInput" placeholder="اسم المستخدم" autocomplete="off">
         <div style="position:relative;">
             <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
@@ -337,10 +337,8 @@
     function completeLogin(user) {
         localStorage.setItem('ems_user', user.username);
         
-        // التعديل: إخفاء واجهة الدخول تماماً فور نجاح الدخول التلقائي
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('fingerprintScanner').classList.add('hidden');
-        
         document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + user.displayName;
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('onlineList').classList.remove('hidden');
@@ -401,13 +399,14 @@
     window.openAdminModal = () => document.getElementById('adminModal').style.display = 'flex';
     window.closeModalOutside = (e) => { if(e.target.id === 'adminModal') document.getElementById('adminModal').style.display = 'none'; };
 
+    // التعديل: منطق التأكد من الجلسة لمنع ظهور واجهة الدخول للمسجلين
     window.onload = async () => {
         if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        
         const saved = localStorage.getItem('ems_user');
         if(saved) {
             const snap = await get(ref(db, 'users/' + saved));
             if(snap.exists()) {
-                // التعديل: تمرير البيانات الصحيحة من السناب شوت
                 completeLogin({
                     username: saved, 
                     displayName: snap.val().displayName, 
@@ -415,7 +414,11 @@
                 });
             } else {
                 localStorage.clear();
+                document.getElementById('loginScreen').classList.remove('hidden');
             }
+        } else {
+            // إذا لم يكن مسجلاً، أظهر شاشة الدخول الآن
+            document.getElementById('loginScreen').classList.remove('hidden');
         }
     };
 </script>
