@@ -52,12 +52,11 @@
             border-bottom: 2px solid var(--primary);
             z-index: 999;
             font-weight: bold;
-            text-align: center; /* تم تثبيت النص في المنتصف */
+            text-align: center;
         }
 
         .marquee-content {
             display: inline-block;
-            /* تم إزالة الأنيكيشن لجعل الكلمة ثابتة */
         }
 
         .controls-nav {
@@ -101,6 +100,23 @@
             box-shadow: 0 0 5px rgba(95, 128, 89, 0.5);
         }
 
+        /* تنسيق مخصص لمربع تذكرني */
+        .remember-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .remember-wrapper input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+
         .container {
             background: var(--bg-card); padding: 30px; border-radius: 25px;
             box-shadow: var(--shadow); width: 95%;
@@ -122,7 +138,6 @@
         }
         .action-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* شاشة البصمة */
         .fp-wrapper {
             position: relative; width: 100px; height: 100px;
             margin: 20px auto; display: flex; align-items: center; justify-content: center; cursor: pointer;
@@ -234,6 +249,12 @@
             <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
             <i class="fa-solid fa-eye" style="position:absolute; left:15px; top:15px; color:var(--primary); cursor:pointer;" onclick="togglePass('passInput')"></i>
         </div>
+        
+        <div class="remember-wrapper">
+            <input type="checkbox" id="rememberMe">
+            <label for="rememberMe">تذكرني على هذا الجهاز</label>
+        </div>
+
         <div id="errorMsg" style="color:var(--danger); display:none; margin-bottom:10px; font-size: 0.8rem;">بيانات الدخول غير صحيحة</div>
         <button class="action-btn" onclick="checkCredentials()">دخول</button>
     </div>
@@ -296,6 +317,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     let sessionUser = null;
+    let shouldRemember = false; // متغير لحفظ حالة خيار "تذكرني"
 
     window.toggleTheme = () => {
         document.body.classList.toggle('light-mode');
@@ -315,6 +337,8 @@
     window.checkCredentials = async function() {
         const u = document.getElementById('userInput').value.toLowerCase().trim();
         const p = document.getElementById('passInput').value;
+        shouldRemember = document.getElementById('rememberMe').checked; // التحقق من الخيار
+
         const snap = await get(ref(db, 'users/' + u));
         if (snap.exists() && snap.val().password === p) {
             sessionUser = { username: u, displayName: snap.val().displayName, role: snap.val().role };
@@ -346,18 +370,25 @@
     }
 
     function completeLogin(user) {
-        localStorage.setItem('ems_user', user.username);
+        // يتم حفظ البيانات فقط إذا تم اختيار "تذكرني"
+        if (shouldRemember) {
+            localStorage.setItem('ems_user', user.username);
+        }
+        
         document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + user.displayName;
         document.getElementById('fingerprintScanner').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('onlineList').classList.remove('hidden');
+        
         if (user.role === "admin" || user.username === "ali_go") {
             document.getElementById('settingsBtn').classList.remove('hidden');
             loadTrainersList();
         }
+
         const sRef = ref(db, 'online_trainers/' + user.username);
         set(sRef, { name: user.displayName });
         onDisconnect(sRef).remove();
+
         onValue(ref(db, 'online_trainers'), (s) => {
             const container = document.getElementById('trainersContainer'); container.innerHTML = "";
             let count = 0;
@@ -398,8 +429,9 @@
     window.deleteUser = (u) => { if(confirm("حذف " + u + "؟")) remove(ref(db, 'users/' + u)); };
 
     window.logout = () => {
-        remove(ref(db, 'online_trainers/' + localStorage.getItem('ems_user')));
-        localStorage.clear();
+        const savedUser = localStorage.getItem('ems_user');
+        if(savedUser) remove(ref(db, 'online_trainers/' + savedUser));
+        localStorage.removeItem('ems_user'); // مسح المستخدم فقط وترك الإعدادات الأخرى مثل الثيم
         location.reload();
     };
 
@@ -408,10 +440,18 @@
 
     window.onload = async () => {
         if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        
         const saved = localStorage.getItem('ems_user');
         if(saved) {
             const snap = await get(ref(db, 'users/' + saved));
-            if(snap.exists()) completeLogin({username: saved, displayName: snap.val().displayName, role: saved.role});
+            if(snap.exists()) {
+                shouldRemember = true; // بما أنه موجود مسبقاً، نعتبر أنه أراد التذكر
+                const userData = snap.val();
+                // تصحيح: تم تمرير الرتبة بشكل صحيح من قاعدة البيانات
+                completeLogin({username: saved, displayName: userData.displayName, role: userData.role});
+            } else {
+                localStorage.removeItem('ems_user');
+            }
         }
     };
 </script>
