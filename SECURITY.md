@@ -1,21 +1,27 @@
-# Security Policy
+# Security Policy | سياسة الأمن لـ EMS Academy
 
-## Supported Versions
+## Supported Versions (الإصدارات المدعومة)
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+بما أن المشروع يعتمد على الويب (Web App)، فإن الدعم يتركز دائماً على آخر نسخة مرفوعة على الرابط المباشر.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
-## Reporting a Vulnerability
+## Reporting a Vulnerability (الإبلاغ عن ثغرة أمنية)
 
-Use this section to tell people how to report a vulnerability.
+نحن نأخذ أمن "أكاديمية الصحة" على محمل الجد. إذا اكتشفت أي ثغرة أمنية (خاصة فيما يتعلق بتسريب بيانات Firebase أو تخطي نظام البصمة الرقمية)، يرجى اتباع الخطوات التالية:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. **عدم النشر العلني:** يرجى عدم فتح "Issue" عام بالثغرة.
+2. **التواصل المباشر:** أرسل تفاصيل الثغرة إلى المطور **علي الحاجي** عبر:
+   - **الديسكورد:** `ali_go`
+   - **البريد الإلكتروني:** [ضع إيميلك هنا]
+
+### ماذا يحدث بعد الإبلاغ؟
+- سيتم الرد عليك وتأكيد استلام البلاغ خلال 48 ساعة.
+- سنعمل على إصلاح الثغرة في أسرع وقت ممكن.
+- سيتم ذكر اسمك في قائمة المساهمين الأمنيين (إذا رغبت في ذلك) بمجرد إغلاق الثغرة.
+
+---
+*شكراً لمساهمتكم في الحفاظ على أمن أكاديميتنا.*
