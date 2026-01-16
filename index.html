@@ -173,7 +173,64 @@
         .footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.75rem; color: #888; }
         .footer strong { color: var(--primary); }
         
-        #wingsMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
+        #wingsMenu, #applyWingsMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
+        
+        /* تحسينات مودرن لاختيار الوقت */
+        .admin-control-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: right;
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--primary);
+            transition: 0.3s;
+        }
+        .admin-control-item:hover { transform: translateX(-5px); }
+        
+        .admin-control-item label { display: block; font-size: 0.8rem; margin-top: 10px; margin-bottom: 5px; color: var(--primary); font-weight: bold; }
+        
+        .admin-control-item input[type="datetime-local"] { 
+            font-size: 0.85rem; 
+            padding: 10px; 
+            background: var(--bg-body) !important;
+            border: 1px solid var(--border) !important;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        
+        .admin-control-item input[type="datetime-local"]:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 8px rgba(95, 128, 89, 0.3);
+        }
+
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(60deg);
+            cursor: pointer;
+        }
+
+        .status-toggle {
+            display: flex;
+            background: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100px;
+            height: 30px;
+        }
+        .status-toggle button {
+            flex: 1;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: bold;
+            font-size: 0.7rem;
+            transition: 0.3s;
+            color: #fff;
+            background: transparent;
+        }
+        .status-toggle .btn-on.active { background: var(--primary); }
+        .status-toggle .btn-off.active { background: var(--danger); }
     </style>
 </head>
 <body>
@@ -189,17 +246,34 @@
 
 <div id="adminModal" class="modal-overlay" onclick="closeModalOutside(event)">
     <div class="modal-content">
-        <h3 style="color: var(--primary); text-align: center; margin-top:0;">إدارة شؤون المدربين</h3>
-        <input type="text" id="addUsername" placeholder="اسم المستخدم" autocomplete="off">
-        <input type="text" id="addPassword" placeholder="كلمة المرور" autocomplete="off">
-        <input type="text" id="addDisplayName" placeholder="الاسم الظاهر" autocomplete="off">
-        <select id="addRole">
-            <option value="trainer">مدرب</option>
-            <option value="admin">مدير نظام</option>
-        </select>
-        <button class="action-btn" onclick="addNewTrainer()">حفظ الحساب</button>
-        <h4 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 25px;">قائمة المدربين:</h4>
-        <div id="adminTrainersList"></div>
+        <h3 style="color: var(--primary); text-align: center; margin-top:0;">إدارة النظام</h3>
+        
+        <div id="adminTabs">
+            <button class="action-btn" onclick="toggleAdminTab('trainers')">إدارة الحسابات</button>
+            <button class="action-btn" style="margin-top:10px; background:#444;" onclick="toggleAdminTab('wingsSettings')">التحكم في التقديمات</button>
+        </div>
+
+        <div id="trainersTab">
+            <h4 style="margin-top:20px;">إضافة/تعديل حساب</h4>
+            <input type="text" id="addUsername" placeholder="اسم المستخدم" autocomplete="off">
+            <input type="text" id="addPassword" placeholder="كلمة المرور" autocomplete="off">
+            <input type="text" id="addDisplayName" placeholder="الاسم الظاهر" autocomplete="off">
+            <select id="addRole">
+                <option value="trainer">مدرب</option>
+                <option value="student">مستجد / متدرب</option>
+                <option value="admin">مدير نظام</option>
+            </select>
+            <button class="action-btn" onclick="addNewTrainer()">حفظ الحساب</button>
+            <h4 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 25px;">قائمة الأعضاء:</h4>
+            <div id="adminTrainersList"></div>
+        </div>
+
+        <div id="wingsSettingsTab" class="hidden">
+            <h4 style="margin-top:20px;">فتح وإغلاق التقديمات</h4>
+            <div id="wingsControlsContainer">
+                </div>
+            <button class="action-btn" style="background:#444" onclick="toggleAdminTab('trainers')">العودة</button>
+        </div>
     </div>
 </div>
 
@@ -238,27 +312,37 @@
 
     <div id="dashboard" class="hidden">
         <p id="welcomeMsg" style="font-weight:900; color:var(--primary); margin-bottom:20px;"></p>
-        <div class="links-grid">
+        <div class="links-grid" id="mainLinks">
             <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
-            <a href="https://docs.google.com/spreadsheets/d/1SYGLwafLP1i9mWBiSaLBorEK_i48EMkp4pOj0C_dMU8/edit?usp=sharing" target="_blank" class="nav-item"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
-            <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
-            <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item"><i class="fas fa-user-md"></i> كتيب المدرب</a>
-            <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item"><i class="fas fa-star"></i> نتائج الونقات</a>
-            <a href="https://forms.gle/Jh7Z5FTjddWxpHEw9" target="_blank" class="nav-item"><i class="fas fa-file-upload"></i> التقارير</a>
-            <a href="https://forms.gle/qpxWfgqT6mKoFvmg8" target="_blank" class="nav-item"><i class="fas fa-plane-departure"></i> الإجازات</a>
-            <a href="https://forms.gle/twE9sj2dfzqPK9rD7" target="_blank" class="nav-item"><i class="fas fa-user-slash"></i> الاستقالة</a>
-            <a href="https://www.canva.com/design/DAGuGH-sDEQ/DLiAkoEAL0MgAarpRTi3vg/view" target="_blank" class="nav-item"><i class="fas fa-gears"></i> آلية التدريب</a>
-            <button class="nav-item" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
+            
+            <a href="https://docs.google.com/spreadsheets/d/1z8S6NVHKOYTbH_O7JUALhxiuWVfWVh5MCaA6qYqmRFw/edit?gid=0#gid=0" target="_blank" class="nav-item trainer-only"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
+            <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item trainer-only"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
+            <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> كتيب المدرب</a>
+            <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRQwKDFhx8_tiQvw4cVYFUY4r30DhLnfwhFGUfBiMyQ5BZdQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-file-upload"></i> التقارير</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfavPU6RuT53HnY-CpZD4sdV4YxRm18uQU6xKu3G_WqHQ0QLg/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-plane-departure"></i> الإجازات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSctwj3gykTadrjCyhUP8Fe4bso3jPzIjhOvfqJcfe_zEcBodA/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-slash"></i> الاستقالة</a>
+            
+            <button class="nav-item trainer-only" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
                 <i class="fas fa-shield-halved"></i> كتيب الونقات
             </button>
+
+            <button class="nav-item" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('applyWingsMenu').classList.toggle('hidden')">
+                <i class="fas fa-id-card"></i> التقديم على الونقات
+            </button>
         </div>
-        <div id="wingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:10px;">
+
+        <div id="wingsMenu" class="hidden trainer-only" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:10px;">
             <a href="https://aahaji-110.github.io/dispatch/" target="_blank" class="nav-item">DC</a>
             <a href="https://aahaji-110.github.io/HC/" target="_blank" class="nav-item">HC</a>
             <a href="https://aahaji-110.github.io/IAC-OAC/" target="_blank" class="nav-item">IAC</a>
             <a href="https://aahaji-110.github.io/co/" target="_blank" class="nav-item">CO</a>
             <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item">AIR</a>
         </div>
+
+        <div id="applyWingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-top:10px;">
+            </div>
+
         <button class="action-btn" style="background: var(--primary); margin-top:20px; font-size:0.8rem;" onclick="logout()">تسجيل الخروج</button>
     </div>
 
@@ -270,7 +354,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, onDisconnect, remove, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, onDisconnect, remove, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC1C6pC9C_4V8Ya8dM6DlRhQt9LQrd3LMY",
@@ -286,6 +370,20 @@
     const db = getDatabase(app);
     let sessionUser = null;
 
+    const WINGS_DATA = [
+        { id: 'group1', label: 'IAC & OAC & DC & HC', links: { 
+            IAC: 'https://docs.google.com/forms/d/e/1FAIpQLSfizKRLhKSObaMSVVhZSbkl2GupXNQwVoyiHAMPMzU7CLyBlA/viewform',
+            OAC: 'https://docs.google.com/forms/d/e/1FAIpQLSeZo0MSwFoHUdQlRj7elS_EeQj0B9tY8PI3IiiO8NCheE6Ekg/viewform',
+            DC: 'https://docs.google.com/forms/d/e/1FAIpQLSc4FTnnnquAv7mvmv3J8w9Zds2Wk0k7Mo4EUqUYoyzIaCNMVQ/viewform',
+            HC: 'https://docs.google.com/forms/d/e/1FAIpQLSeD3nhGotsmkt82nxqR7RV--bGZUxo9cTtdRHxuMB1duesvSg/viewform'
+        }},
+        { id: 'airship', label: 'Airship', link: 'https://docs.google.com/forms/d/e/1FAIpQLSfCS4fFYmKvnUxxS8JshMP7zusP8lfxEJcxyfT8sHQU0zG9Bg/viewform' },
+        { id: 'frd', label: 'FRD', link: 'https://docs.google.com/forms/d/e/1FAIpQLSfLzjJzM1a1hXw91SJtRas5EikWzlUpy07WXokXB18_Kg0e2A/viewform' },
+        { id: 'ds', label: 'DS', link: 'https://docs.google.com/forms/d/e/1FAIpQLSczj3qy-oeYAqb90mZCquKp3qTX7EQC9ZnruJAsHkEBH6ebcw/viewform' },
+        { id: 'co', label: 'CO', link: 'https://docs.google.com/forms/d/e/1FAIpQLSdp5n8z49IC-MItmiGvt0heFhPga8s-oFPnzZJjGb6zdwdIJw/viewform' },
+        { id: 'fto', label: 'FTO', link: 'https://docs.google.com/forms/d/e/1FAIpQLSdb-YMB3SZWplbmzkEb260X2hOFTZ-vIdhSoenaUhZ7a8XXVA/viewform' }
+    ];
+
     window.toggleTheme = () => {
         document.body.classList.toggle('light-mode');
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
@@ -296,10 +394,16 @@
         p.type = p.type === "password" ? "text" : "password";
     };
 
-    onValue(ref(db, 'announcements'), (s) => {
-        let text = ""; s.forEach(c => { text += " • " + c.val(); });
-        document.getElementById('newsContent').innerText = text || "مرحباً بكم في أكاديمية الصحة";
-    });
+    window.toggleAdminTab = (tab) => {
+        if(tab === 'trainers') {
+            document.getElementById('trainersTab').classList.remove('hidden');
+            document.getElementById('wingsSettingsTab').classList.add('hidden');
+        } else {
+            document.getElementById('trainersTab').classList.add('hidden');
+            document.getElementById('wingsSettingsTab').classList.remove('hidden');
+            loadWingsAdminControls();
+        }
+    };
 
     window.checkCredentials = async function() {
         const u = document.getElementById('userInput').value.toLowerCase().trim();
@@ -322,7 +426,7 @@
             wrapper.classList.remove('fp-active');
             text.classList.add('hidden');
             status.style.display = "block";
-            status.innerText = "تم التأكد من هوية المدرب: " + sessionUser.displayName;
+            status.innerText = "تم التأكد من الهوية: " + sessionUser.displayName;
             setTimeout(() => {
                 logActivity(sessionUser.username, sessionUser.displayName);
                 completeLogin(sessionUser);
@@ -336,18 +440,29 @@
 
     function completeLogin(user) {
         localStorage.setItem('ems_user', user.username);
-        
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('fingerprintScanner').classList.add('hidden');
         document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + user.displayName;
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('onlineList').classList.remove('hidden');
 
+        if (user.role === "student") {
+            document.querySelectorAll('.trainer-only').forEach(el => el.classList.add('hidden'));
+        } else {
+            document.querySelectorAll('.trainer-only').forEach(el => el.classList.remove('hidden'));
+            document.getElementById('wingsMenu').classList.add('hidden');
+        }
+
         if (user.role === "admin" || user.username === "ali_go") {
             document.getElementById('settingsBtn').classList.remove('hidden');
             loadTrainersList();
         }
 
+        setupOnlineStatus(user);
+        listenToWingsSettings();
+    }
+
+    function setupOnlineStatus(user) {
         const sRef = ref(db, 'online_trainers/' + user.username);
         set(sRef, { name: user.displayName });
         onDisconnect(sRef).remove();
@@ -362,6 +477,70 @@
         });
     }
 
+    function loadWingsAdminControls() {
+        const container = document.getElementById('wingsControlsContainer');
+        container.innerHTML = "جاري التحميل...";
+        
+        get(ref(db, 'wings_settings')).then((snap) => {
+            const settings = snap.val() || {};
+            container.innerHTML = "";
+            WINGS_DATA.forEach(wing => {
+                const wingSet = settings[wing.id] || { active: false, start: '', end: '' };
+                const div = document.createElement('div');
+                div.className = 'admin-control-item';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${wing.label}</strong>
+                        <div class="status-toggle">
+                            <button class="btn-on ${wingSet.active ? 'active' : ''}" onclick="updateWingStatus('${wing.id}', true)">ON</button>
+                            <button class="btn-off ${!wingSet.active ? 'active' : ''}" onclick="updateWingStatus('${wing.id}', false)">OFF</button>
+                        </div>
+                    </div>
+                    <label>وقت البدء:</label>
+                    <input type="datetime-local" id="start_${wing.id}" value="${wingSet.start || ''}" onchange="updateWingTime('${wing.id}', 'start', this.value)">
+                    <label>وقت الانتهاء:</label>
+                    <input type="datetime-local" id="end_${wing.id}" value="${wingSet.end || ''}" onchange="updateWingTime('${wing.id}', 'end', this.value)">
+                `;
+                container.appendChild(div);
+            });
+        });
+    }
+
+    window.updateWingStatus = (id, val) => { 
+        update(ref(db, `wings_settings/${id}`), { active: val }).then(() => {
+            loadWingsAdminControls(); 
+        });
+    };
+    window.updateWingTime = (id, type, val) => { let obj = {}; obj[type] = val; update(ref(db, `wings_settings/${id}`), obj); };
+
+    function listenToWingsSettings() {
+        onValue(ref(db, 'wings_settings'), (snap) => {
+            const settings = snap.val() || {};
+            const menu = document.getElementById('applyWingsMenu');
+            menu.innerHTML = "";
+            const now = new Date().getTime();
+
+            WINGS_DATA.forEach(wing => {
+                const wingSet = settings[wing.id];
+                if (wingSet && wingSet.active) {
+                    const startTime = wingSet.start ? new Date(wingSet.start).getTime() : 0;
+                    const endTime = wingSet.end ? new Date(wingSet.end).getTime() : Infinity;
+
+                    if (now >= startTime && now <= endTime) {
+                        if (wing.id === 'group1') {
+                            Object.entries(wing.links).forEach(([name, url]) => {
+                                menu.innerHTML += `<a href="${url}" target="_blank" class="nav-item">${name}</a>`;
+                            });
+                        } else {
+                            menu.innerHTML += `<a href="${wing.link}" target="_blank" class="nav-item">${wing.label}</a>`;
+                        }
+                    }
+                }
+            });
+            if(menu.innerHTML === "") menu.innerHTML = "<p style='grid-column:span 2; font-size:0.8rem; color:#888;'>لا توجد تقديمات متاحة حالياً</p>";
+        });
+    }
+
     function loadTrainersList() {
         onValue(ref(db, 'users'), (snap) => {
             const listDiv = document.getElementById('adminTrainersList');
@@ -373,19 +552,19 @@
         });
     }
 
-    window.fillTrainerData = (u, p, d, r) => {
-        document.getElementById('addUsername').value = u;
-        document.getElementById('addPassword').value = p;
-        document.getElementById('addDisplayName').value = d;
-        document.getElementById('addRole').value = r;
-    };
-
     window.addNewTrainer = () => {
         const u = document.getElementById('addUsername').value.toLowerCase().trim();
         const p = document.getElementById('addPassword').value;
         const d = document.getElementById('addDisplayName').value;
         const r = document.getElementById('addRole').value;
         if(u && p && d) set(ref(db, 'users/' + u), { password: p, displayName: d, role: r });
+    };
+
+    window.fillTrainerData = (u, p, d, r) => {
+        document.getElementById('addUsername').value = u;
+        document.getElementById('addPassword').value = p;
+        document.getElementById('addDisplayName').value = d;
+        document.getElementById('addRole').value = r;
     };
 
     window.deleteUser = (u) => { if(confirm("حذف " + u + "؟")) remove(ref(db, 'users/' + u)); };
@@ -399,25 +578,23 @@
     window.openAdminModal = () => document.getElementById('adminModal').style.display = 'flex';
     window.closeModalOutside = (e) => { if(e.target.id === 'adminModal') document.getElementById('adminModal').style.display = 'none'; };
 
-    // التعديل: منطق التأكد من الجلسة لمنع ظهور واجهة الدخول للمسجلين
+    onValue(ref(db, 'announcements'), (s) => {
+        let text = ""; s.forEach(c => { text += " • " + c.val(); });
+        document.getElementById('newsContent').innerText = text || "مرحباً بكم في أكاديمية الصحة";
+    });
+
     window.onload = async () => {
         if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
-        
         const saved = localStorage.getItem('ems_user');
         if(saved) {
             const snap = await get(ref(db, 'users/' + saved));
             if(snap.exists()) {
-                completeLogin({
-                    username: saved, 
-                    displayName: snap.val().displayName, 
-                    role: snap.val().role 
-                });
+                completeLogin({ username: saved, displayName: snap.val().displayName, role: snap.val().role });
             } else {
                 localStorage.clear();
                 document.getElementById('loginScreen').classList.remove('hidden');
             }
         } else {
-            // إذا لم يكن مسجلاً، أظهر شاشة الدخول الآن
             document.getElementById('loginScreen').classList.remove('hidden');
         }
     };
