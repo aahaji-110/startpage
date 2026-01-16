@@ -175,7 +175,6 @@
         
         #wingsMenu, #applyWingsMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
         
-        /* تحسينات مودرن لاختيار الوقت */
         .admin-control-item {
             background: rgba(255,255,255,0.05);
             padding: 15px;
@@ -231,6 +230,16 @@
         }
         .status-toggle .btn-on.active { background: var(--primary); }
         .status-toggle .btn-off.active { background: var(--danger); }
+
+        /* تنسيق الزر الطويل للآدمن */
+        .admin-long-btn {
+            grid-column: span 2;
+            background: rgba(95, 128, 89, 0.2) !important;
+            border: 2px solid var(--primary) !important;
+            color: var(--primary) !important;
+            font-size: 1rem !important;
+            padding: 15px !important;
+        }
     </style>
 </head>
 <body>
@@ -316,6 +325,9 @@
             <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
             
             <a href="https://docs.google.com/spreadsheets/d/1z8S6NVHKOYTbH_O7JUALhxiuWVfWVh5MCaA6qYqmRFw/edit?gid=0#gid=0" target="_blank" class="nav-item trainer-only"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
+
+            <a href="https://docs.google.com/spreadsheets/d/1W-8y9qAWe4kQOZ3Mw-wBK9_od0wS9jpOFpAMRU__i_A/edit?gid=1618844308#gid=1618844308" id="presidencyBtn" class="nav-item admin-long-btn hidden"><i class="fas fa-crown"></i> رئاسة الأكاديمية</a>
+            
             <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item trainer-only"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
             <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> كتيب المدرب</a>
             <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
@@ -451,6 +463,11 @@
         } else {
             document.querySelectorAll('.trainer-only').forEach(el => el.classList.remove('hidden'));
             document.getElementById('wingsMenu').classList.add('hidden');
+        }
+
+        // إظهار زر رئاسة الأكاديمية للآدمن فقط
+        if (user.role === "admin") {
+            document.getElementById('presidencyBtn').classList.remove('hidden');
         }
 
         if (user.role === "admin" || user.username === "ali_go") {
