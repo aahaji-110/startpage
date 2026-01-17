@@ -264,7 +264,7 @@
             <select id="addRole">
                 <option value="trainer">مدرب</option>
                 <option value="student">مستجد / متدرب</option>
-                <option value="admin">مدير نظام</option>
+                <option value="admin">admin</option>
             </select>
             <button class="action-btn" onclick="addNewTrainer()">حفظ الحساب</button>
             <h4 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 25px;">قائمة الأعضاء:</h4>
@@ -315,15 +315,15 @@
     <div id="dashboard" class="hidden">
         <p id="welcomeMsg" style="font-weight:900; color:var(--primary); margin-bottom:20px;"></p>
         <div class="links-grid" id="mainLinks">
+            <a href="https://docs.google.com/spreadsheets/d/1W-8y9qAWe4kQOZ3Mw-wBK9_od0wS9jpOFpAMRU__i_A/edit?gid=1618844308#gid=1618844308" id="presidencyBtn" class="nav-item admin-long-btn hidden"><i class="fas fa-crown"></i> رئاسة الأكاديمية</a>
             <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
             <a href="https://docs.google.com/spreadsheets/d/1z8S6NVHKOYTbH_O7JUALhxiuWVfWVh5MCaA6qYqmRFw/edit?gid=0#gid=0" target="_blank" class="nav-item trainer-only"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
-            <a href="https://docs.google.com/spreadsheets/d/1W-8y9qAWe4kQOZ3Mw-wBK9_od0wS9jpOFpAMRU__i_A/edit?gid=1618844308#gid=1618844308" id="presidencyBtn" class="nav-item admin-long-btn hidden"><i class="fas fa-crown"></i> رئاسة الأكاديمية</a>
             <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item trainer-only"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
             <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> كتيب المدرب</a>
-            <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRQwKDFhx8_tiQvw4cVYFUY4r30DhLnfwhFGUfBiMyQ5BZdQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-file-upload"></i> التقارير</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSfavPU6RuT53HnY-CpZD4sdV4YxRm18uQU6xKu3G_WqHQ0QLg/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-plane-departure"></i> الإجازات</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSctwj3gykTadrjCyhUP8Fe4bso3jPzIjhOvfqJcfe_zEcBodA/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-slash"></i> الاستقالة</a>
+            <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRQwKDFhx8_tiQvw4cVYFUY4r30DhLnfwhFGUfBiMyQ5BZdQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-file-upload"></i> التقارير</a>
             
             <button class="nav-item trainer-only" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
                 <i class="fas fa-shield-halved"></i> كتيب الونقات
