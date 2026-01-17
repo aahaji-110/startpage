@@ -198,11 +198,6 @@
             appearance: none;
             -webkit-appearance: none;
         }
-        
-        .admin-control-item input[type="datetime-local"]:focus {
-            border-color: var(--primary) !important;
-            box-shadow: 0 0 8px rgba(95, 128, 89, 0.3);
-        }
 
         ::-webkit-calendar-picker-indicator {
             filter: invert(0.5) sepia(1) saturate(5) hue-rotate(60deg);
@@ -231,7 +226,6 @@
         .status-toggle .btn-on.active { background: var(--primary); }
         .status-toggle .btn-off.active { background: var(--danger); }
 
-        /* تنسيق الزر الطويل للآدمن */
         .admin-long-btn {
             grid-column: span 2;
             background: rgba(95, 128, 89, 0.2) !important;
@@ -265,7 +259,7 @@
         <div id="trainersTab">
             <h4 style="margin-top:20px;">إضافة/تعديل حساب</h4>
             <input type="text" id="addUsername" placeholder="اسم المستخدم" autocomplete="off">
-            <input type="text" id="addPassword" placeholder="كلمة المرور" autocomplete="off">
+            <input type="password" id="addPassword" placeholder="كلمة المرور" autocomplete="off">
             <input type="text" id="addDisplayName" placeholder="الاسم الظاهر" autocomplete="off">
             <select id="addRole">
                 <option value="trainer">مدرب</option>
@@ -279,8 +273,7 @@
 
         <div id="wingsSettingsTab" class="hidden">
             <h4 style="margin-top:20px;">فتح وإغلاق التقديمات</h4>
-            <div id="wingsControlsContainer">
-                </div>
+            <div id="wingsControlsContainer"></div>
             <button class="action-btn" style="background:#444" onclick="toggleAdminTab('trainers')">العودة</button>
         </div>
     </div>
@@ -323,11 +316,8 @@
         <p id="welcomeMsg" style="font-weight:900; color:var(--primary); margin-bottom:20px;"></p>
         <div class="links-grid" id="mainLinks">
             <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
-            
             <a href="https://docs.google.com/spreadsheets/d/1z8S6NVHKOYTbH_O7JUALhxiuWVfWVh5MCaA6qYqmRFw/edit?gid=0#gid=0" target="_blank" class="nav-item trainer-only"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
-
             <a href="https://docs.google.com/spreadsheets/d/1W-8y9qAWe4kQOZ3Mw-wBK9_od0wS9jpOFpAMRU__i_A/edit?gid=1618844308#gid=1618844308" id="presidencyBtn" class="nav-item admin-long-btn hidden"><i class="fas fa-crown"></i> رئاسة الأكاديمية</a>
-            
             <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item trainer-only"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
             <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> كتيب المدرب</a>
             <a href="https://forms.gle/n7dYgSPwAfGfKEgH6" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
@@ -338,7 +328,6 @@
             <button class="nav-item trainer-only" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
                 <i class="fas fa-shield-halved"></i> كتيب الونقات
             </button>
-
             <button class="nav-item" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('applyWingsMenu').classList.toggle('hidden')">
                 <i class="fas fa-id-card"></i> التقديم على الونقات
             </button>
@@ -352,8 +341,7 @@
             <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item">AIR</a>
         </div>
 
-        <div id="applyWingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-top:10px;">
-            </div>
+        <div id="applyWingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-top:10px;"></div>
 
         <button class="action-btn" style="background: var(--primary); margin-top:20px; font-size:0.8rem;" onclick="logout()">تسجيل الخروج</button>
     </div>
@@ -407,25 +395,24 @@
     };
 
     window.toggleAdminTab = (tab) => {
-        if(tab === 'trainers') {
-            document.getElementById('trainersTab').classList.remove('hidden');
-            document.getElementById('wingsSettingsTab').classList.add('hidden');
-        } else {
-            document.getElementById('trainersTab').classList.add('hidden');
-            document.getElementById('wingsSettingsTab').classList.remove('hidden');
-            loadWingsAdminControls();
-        }
+        document.getElementById('trainersTab').classList.toggle('hidden', tab !== 'trainers');
+        document.getElementById('wingsSettingsTab').classList.toggle('hidden', tab !== 'wingsSettings');
+        if (tab === 'wingsSettings') loadWingsAdminControls();
     };
 
     window.checkCredentials = async function() {
         const u = document.getElementById('userInput').value.toLowerCase().trim();
         const p = document.getElementById('passInput').value;
+        if(!u || !p) return;
+        
         const snap = await get(ref(db, 'users/' + u));
         if (snap.exists() && snap.val().password === p) {
             sessionUser = { username: u, displayName: snap.val().displayName, role: snap.val().role };
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('fingerprintScanner').classList.remove('hidden');
-        } else { document.getElementById('errorMsg').style.display = 'block'; }
+        } else { 
+            document.getElementById('errorMsg').style.display = 'block'; 
+        }
     };
 
     window.verifyFingerprint = () => {
@@ -442,33 +429,31 @@
             setTimeout(() => {
                 logActivity(sessionUser.username, sessionUser.displayName);
                 completeLogin(sessionUser);
-            }, 1000);
-        }, 2000);
+            }, 800);
+        }, 1500);
     };
 
     function logActivity(u, n) {
-        push(ref(db, 'logs'), { user: u, name: n, time: new Date().toLocaleString('ar-SA'), device: navigator.userAgent.includes("Mobi") ? "جوال" : "كمبيوتر" });
+        push(ref(db, 'logs'), { 
+            user: u, 
+            name: n, 
+            time: new Date().toLocaleString('ar-SA'), 
+            device: /Mobi|Android/i.test(navigator.userAgent) ? "جوال" : "كمبيوتر" 
+        });
     }
 
     function completeLogin(user) {
         localStorage.setItem('ems_user', user.username);
-        document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('fingerprintScanner').classList.add('hidden');
         document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + user.displayName;
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('onlineList').classList.remove('hidden');
 
-        if (user.role === "student") {
-            document.querySelectorAll('.trainer-only').forEach(el => el.classList.add('hidden'));
-        } else {
-            document.querySelectorAll('.trainer-only').forEach(el => el.classList.remove('hidden'));
-            document.getElementById('wingsMenu').classList.add('hidden');
-        }
-
-        // إظهار زر رئاسة الأكاديمية للآدمن فقط
-        if (user.role === "admin") {
-            document.getElementById('presidencyBtn').classList.remove('hidden');
-        }
+        const isStudent = user.role === "student";
+        document.querySelectorAll('.trainer-only').forEach(el => el.classList.toggle('hidden', isStudent));
+        if (!isStudent) document.getElementById('wingsMenu').classList.add('hidden');
+        
+        document.getElementById('presidencyBtn').classList.toggle('hidden', user.role !== "admin");
 
         if (user.role === "admin" || user.username === "ali_go") {
             document.getElementById('settingsBtn').classList.remove('hidden');
@@ -484,7 +469,8 @@
         set(sRef, { name: user.displayName });
         onDisconnect(sRef).remove();
         onValue(ref(db, 'online_trainers'), (s) => {
-            const container = document.getElementById('trainersContainer'); container.innerHTML = "";
+            const container = document.getElementById('trainersContainer'); 
+            container.innerHTML = "";
             let count = 0;
             s.forEach(c => {
                 container.innerHTML += `<div style="margin-bottom:5px;"><span style="color: #2ecc71; margin-left: 5px;">●</span>${c.val().name}</div>`;
@@ -524,18 +510,19 @@
     }
 
     window.updateWingStatus = (id, val) => { 
-        update(ref(db, `wings_settings/${id}`), { active: val }).then(() => {
-            loadWingsAdminControls(); 
-        });
+        update(ref(db, `wings_settings/${id}`), { active: val }).then(() => loadWingsAdminControls());
     };
-    window.updateWingTime = (id, type, val) => { let obj = {}; obj[type] = val; update(ref(db, `wings_settings/${id}`), obj); };
+    window.updateWingTime = (id, type, val) => { 
+        let obj = {}; obj[type] = val; 
+        update(ref(db, `wings_settings/${id}`), obj); 
+    };
 
     function listenToWingsSettings() {
         onValue(ref(db, 'wings_settings'), (snap) => {
             const settings = snap.val() || {};
             const menu = document.getElementById('applyWingsMenu');
             menu.innerHTML = "";
-            const now = new Date().getTime();
+            const now = Date.now();
 
             WINGS_DATA.forEach(wing => {
                 const wingSet = settings[wing.id];
@@ -564,7 +551,14 @@
             listDiv.innerHTML = "";
             snap.forEach((child) => {
                 const data = child.val();
-                listDiv.innerHTML += `<div class="user-card"><div><strong>${data.displayName}</strong><br><small style="color:var(--primary)">${child.key} | ${data.role}</small></div><div><i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:15px;" onclick="fillTrainerData('${child.key}', '${data.password}', '${data.displayName}', '${data.role}')"></i><i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteUser('${child.key}')"></i></div></div>`;
+                listDiv.innerHTML += `
+                <div class="user-card">
+                    <div><strong>${data.displayName}</strong><br><small style="color:var(--primary)">${child.key} | ${data.role}</small></div>
+                    <div>
+                        <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:15px;" onclick="fillTrainerData('${child.key}', '${data.password}', '${data.displayName}', '${data.role}')"></i>
+                        <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteUser('${child.key}')"></i>
+                    </div>
+                </div>`;
             });
         });
     }
@@ -574,7 +568,14 @@
         const p = document.getElementById('addPassword').value;
         const d = document.getElementById('addDisplayName').value;
         const r = document.getElementById('addRole').value;
-        if(u && p && d) set(ref(db, 'users/' + u), { password: p, displayName: d, role: r });
+        if(u && p && d) {
+            set(ref(db, 'users/' + u), { password: p, displayName: d, role: r })
+            .then(() => {
+                document.getElementById('addUsername').value = "";
+                document.getElementById('addPassword').value = "";
+                document.getElementById('addDisplayName').value = "";
+            });
+        }
     };
 
     window.fillTrainerData = (u, p, d, r) => {
@@ -587,7 +588,8 @@
     window.deleteUser = (u) => { if(confirm("حذف " + u + "؟")) remove(ref(db, 'users/' + u)); };
 
     window.logout = () => {
-        remove(ref(db, 'online_trainers/' + localStorage.getItem('ems_user')));
+        const saved = localStorage.getItem('ems_user');
+        if(saved) remove(ref(db, 'online_trainers/' + saved));
         localStorage.clear();
         location.reload();
     };
