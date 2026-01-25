@@ -173,7 +173,7 @@
         .footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.75rem; color: #888; }
         .footer strong { color: var(--primary); }
         
-        #wingsMenu, #applyWingsMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
+        #wingsMenu, #applyWingsMenu, #presidencyMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
         
         .admin-control-item {
             background: rgba(255,255,255,0.05);
@@ -286,7 +286,7 @@
 
 <div class="container">
     <header>
-        <img src="https://github.com/aahaji-110/startpage/blob/main/images/Untitled-33.png?raw=true" class="logo-img">
+        <img src="https://www2.0zz0.com/2025/12/22/17/297618659.png" class="logo-img">
         <div style="text-align:left">
             <h2 style="margin:0; font-size:1.1rem; letter-spacing: 1px;">Ministry Of Health</h2>
             <span style="color:var(--primary); font-weight: bold; font-size:0.8rem;">EMS Academy</span>
@@ -315,7 +315,14 @@
     <div id="dashboard" class="hidden">
         <p id="welcomeMsg" style="font-weight:900; color:var(--primary); margin-bottom:20px;"></p>
         <div class="links-grid" id="mainLinks">
-            <a href="https://docs.google.com/spreadsheets/d/1W-8y9qAWe4kQOZ3Mw-wBK9_od0wS9jpOFpAMRU__i_A/edit?gid=1618844308#gid=1618844308" id="presidencyBtn" class="nav-item admin-long-btn hidden"><i class="fas fa-crown"></i> رئاسة الأكاديمية</a>
+            <button id="presidencyBtn" class="nav-item admin-long-btn hidden" onclick="document.getElementById('presidencyMenu').classList.toggle('hidden')">
+                <i class="fas fa-crown"></i> رئاسة الأكاديمية
+            </button>
+            <div id="presidencyMenu" class="hidden admin-long-btn" style="grid-column: span 2; display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom: 10px;">
+                <a href="https://docs.google.com/spreadsheets/d/1W-8y9qAWe4kQOZ3Mw-wBK9_od0wS9jpOFpAMRU__i_A/edit?gid=1618844308#gid=1618844308" target="_blank" class="nav-item">جدول الرئاسة</a>
+                <a href="https://aahaji-110.github.io/report/" target="_blank" class="nav-item">تقرير دفعة جديدة</a>
+            </div>
+
             <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
             <a href="https://docs.google.com/spreadsheets/d/1QnZwyL7QAKPRbGWGymPVUnykrRKifrqkDov_BSBrqmc/edit?gid=417080479#gid=417080479" target="_blank" class="nav-item trainer-only"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
             <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item trainer-only"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
@@ -338,6 +345,7 @@
             <a href="https://aahaji-110.github.io/HC/" target="_blank" class="nav-item">HC</a>
             <a href="https://aahaji-110.github.io/IAC-OAC/" target="_blank" class="nav-item">IAC</a>
             <a href="https://aahaji-110.github.io/co/" target="_blank" class="nav-item">CO</a>
+            <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item">AIR</a>
             <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item">AIR</a>
         </div>
 
@@ -453,7 +461,10 @@
         document.querySelectorAll('.trainer-only').forEach(el => el.classList.toggle('hidden', isStudent));
         if (!isStudent) document.getElementById('wingsMenu').classList.add('hidden');
         
-        document.getElementById('presidencyBtn').classList.toggle('hidden', user.role !== "admin");
+        // تعديل: التحكم في زر الرئاسة والقائمة التابعة له
+        const isPresidency = user.role === "admin";
+        document.getElementById('presidencyBtn').classList.toggle('hidden', !isPresidency);
+        if(!isPresidency) document.getElementById('presidencyMenu').classList.add('hidden');
 
         if (user.role === "admin" || user.username === "ali_go") {
             document.getElementById('settingsBtn').classList.remove('hidden');
@@ -620,9 +631,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
