@@ -367,7 +367,7 @@
             <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> اسألة الأختبار</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWruE20ouIiiRMx0pZ88R06yyoQyT_7d8kQPF6xr76-js6GQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-plane-departure"></i> الإجازات</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSetYpR477z32URo8oCHWpTdBvAwxz3A2lw9-QIIqdVeP2ny0w/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-slash"></i> الاستقالة</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTKfHMCul-m5DY6s1XDMnpBdtmHAyx5OC0I7-qFla26ZsKDA/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTKfHMCul-m5DY6s1XDMnpBdtmHAyx5OC0I7-qFla26ZsKDA/viewform" target=" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRQwKDFhx8_tiQvw4cVYFUY4r30DhLnfwhFGUfBiMyQ5BZdQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-file-upload"></i> التقارير</a>
             
             <button class="nav-item trainer-only" style="cursor:pointer; width:100%; font-family:'Cairo';" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
@@ -424,10 +424,11 @@
 
             <div class="score-box">المجموع النهائي: <span id="weeklyTotalScore">0</span> / 10</div>
 
-            <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary); font-weight:bold;">توجيه التقرير إلى:</label>
-            <select id="weeklyForwardTarget" class="roles-target-select">
-                <option value="">اختر المنصب/الشخص الموجه له...</option>
-            </select>
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية (للفصل في التعادل):</label>
+            <input type="number" id="weeklyAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية">
+
+            <label style="font-size:0.75rem; display:block; text-align:right;">ساعات المباشرة الأسبوعية:</label>
+            <input type="number" id="weeklyWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات">
 
             <textarea id="weeklyNotes" placeholder="ملاحظات..." rows="2"></textarea>
 
@@ -466,10 +467,11 @@
 
             <div class="score-box">المجموع النهائي: <span id="batchTotalScore">0</span> / 10</div>
 
-            <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary); font-weight:bold;">توجيه التقرير إلى:</label>
-            <select id="batchForwardTarget" class="roles-target-select">
-                <option value="">اختر المنصب/الشخص الموجه له...</option>
-            </select>
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية (للفصل في التعادل):</label>
+            <input type="number" id="batchAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية">
+
+            <label style="font-size:0.75rem; display:block; text-align:right;">ساعات المباشرة خلال الدفعة:</label>
+            <input type="number" id="batchWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات">
 
             <textarea id="batchNotes" placeholder="ملاحظات..." rows="2"></textarea>
 
@@ -620,20 +622,6 @@
     window.allFetchedReports = {};
     window.editingReportKey = null;
 
-    // قائمة المناصب المسجلة في النظام للاختيار والتوجيه
-    const ROLES_LIST = [
-        "Academy Commander Abdvilah",
-        "Academy Deputy Abud7im",
-        "Academy Supervisor Ali",
-        "EMS CHIEF Deema",
-        "FTO Fahad",
-        "FTO Fatima",
-        "FTO Ibrahem",
-        "FTO Raghad",
-        "FTO Majed",
-        "FTO Wesam"
-    ];
-
     const WINGS_DATA = [
         { id: 'group1', label: 'IAC & OAC & DC & HC', links: { 
             IAC: 'https://docs.google.com/forms/d/e/1FAIpQLSfizKRLhKSObaMSVVhZSbkl2GupXNQwVoyiHAMPMzU7CLyBlA/viewform',
@@ -726,21 +714,10 @@
             loadTrainersList();
         }
 
-        populateRolesDropdowns();
         setupOnlineStatus(user);
         listenToWingsSettings();
         listenToTrainerProfiles();
         calcTopTrainerOfMonth();
-    }
-
-    function populateRolesDropdowns() {
-        const selects = document.querySelectorAll('.roles-target-select');
-        selects.forEach(select => {
-            select.innerHTML = '<option value="">اختر المنصب/الشخص الموجه له...</option>';
-            ROLES_LIST.forEach(role => {
-                select.innerHTML += `<option value="${role}">${role}</option>`;
-            });
-        });
     }
 
     function setupOnlineStatus(user) {
@@ -1010,9 +987,10 @@
         document.getElementById('weeklyAdminPoints').value = '';
         document.getElementById('weeklyFieldPoints').value = '';
         document.getElementById('weeklyPresidencyPoints').value = '';
+        document.getElementById('weeklyAdminTasks').value = '';
+        document.getElementById('weeklyWorkingHours').value = '';
         document.getElementById('weeklyTotalScore').innerText = '0';
         document.getElementById('weeklyNotes').value = '';
-        document.getElementById('weeklyForwardTarget').value = '';
         document.getElementById('btnSubmitWeekly').innerText = "حفظ التقييم الأسبوعي";
     }
 
@@ -1024,9 +1002,10 @@
         document.getElementById('batchAttendPoints').value = '';
         document.getElementById('batchPresentPoints').value = '';
         document.getElementById('batchPresidencyPoints').value = '';
+        document.getElementById('batchAdminTasks').value = '';
+        document.getElementById('batchWorkingHours').value = '';
         document.getElementById('batchTotalScore').innerText = '0';
         document.getElementById('batchNotes').value = '';
-        document.getElementById('batchForwardTarget').value = '';
         document.getElementById('btnSubmitBatch').innerText = "حفظ تقييم الدفعة";
     }
 
@@ -1037,7 +1016,6 @@
         const trainerName = trainersProfiles[key].name;
         const totalScore = parseFloat(document.getElementById('weeklyTotalScore').innerText);
         const notes = document.getElementById('weeklyNotes').value;
-        const forwardTarget = document.getElementById('weeklyForwardTarget').value;
         const today = new Date().toISOString().split('T')[0];
 
         const reportData = {
@@ -1049,9 +1027,10 @@
             adminPoints: document.getElementById('weeklyAdminPoints').value || 0,
             fieldPoints: document.getElementById('weeklyFieldPoints').value || 0,
             presidencyPoints: document.getElementById('weeklyPresidencyPoints').value || 0,
+            adminTasksCount: parseInt(document.getElementById('weeklyAdminTasks').value) || 0,
+            workingHours: parseFloat(document.getElementById('weeklyWorkingHours').value) || 0,
             totalScore: totalScore,
             notes: notes,
-            forwardTarget: forwardTarget,
             date: today,
             timestamp: Date.now()
         };
@@ -1068,7 +1047,7 @@
             });
         } else {
             push(ref(db, 'eval_reports'), reportData).then(() => {
-                alert("تم حفظ التقييم الأسبوعي وتوجيهه بنجاح إلى: " + (forwardTarget || "عموم الرئاسة"));
+                alert("تم حفظ التقييم الأسبوعي بنجاح");
                 const tbody = document.getElementById('weeklySummaryBody');
                 if(tbody.innerText.includes("لا توجد")) tbody.innerHTML = "";
                 tbody.innerHTML += `<tr><td>${trainerName}</td><td>${totalScore}</td><td>${notes || '-'}</td></tr>`;
@@ -1084,7 +1063,6 @@
         const trainerName = trainersProfiles[key].name;
         const totalScore = parseFloat(document.getElementById('batchTotalScore').innerText);
         const notes = document.getElementById('batchNotes').value;
-        const forwardTarget = document.getElementById('batchForwardTarget').value;
         const today = new Date().toISOString().split('T')[0];
 
         const reportData = {
@@ -1096,9 +1074,10 @@
             attendPoints: document.getElementById('batchAttendPoints').value || 0,
             presentPoints: document.getElementById('batchPresentPoints').value || 0,
             presidencyPoints: document.getElementById('batchPresidencyPoints').value || 0,
+            adminTasksCount: parseInt(document.getElementById('batchAdminTasks').value) || 0,
+            workingHours: parseFloat(document.getElementById('batchWorkingHours').value) || 0,
             totalScore: totalScore,
             notes: notes,
-            forwardTarget: forwardTarget,
             date: today,
             timestamp: Date.now()
         };
@@ -1115,7 +1094,7 @@
             });
         } else {
             push(ref(db, 'eval_reports'), reportData).then(() => {
-                alert("تم حفظ تقييم الدفعة وتوجيهه بنجاح إلى: " + (forwardTarget || "عموم الرئاسة"));
+                alert("تم حفظ تقييم الدفعة بنجاح");
                 resetBatchForm();
             });
         }
@@ -1176,18 +1155,18 @@
                 html += `<h4 style="color:var(--primary); border-bottom:1px solid #3b4d37;">التقييمات الأسبوعية المفصلة</h4>
                 <div class="table-responsive">
                 <table class="eval-table">
-                    <thead><tr><th>المدرب</th><th>التاريخ</th><th>إداري (10)</th><th>ميداني (5)</th><th>رئاسة (5)</th><th>المجموع</th><th>التوجيه</th><th>الإجراءات</th></tr></thead>
+                    <thead><tr><th>المدرب</th><th>التاريخ</th><th>إداري</th><th>ميداني</th><th>رئاسة</th><th>المجموع</th><th>أعمال إدارية</th><th>ساعات المباشرة</th><th>الإجراءات</th></tr></thead>
                     <tbody>`;
                 weeklyList.forEach(w => {
                     html += `<tr>
-                        <td>${w.trainerName}</td><td>${w.date}</td><td>${w.adminPoints}</td><td>${w.fieldPoints}</td><td>${w.presidencyPoints}</td><td>${w.totalScore}</td><td>${w.forwardTarget || '-'}</td>
+                        <td>${w.trainerName}</td><td>${w.date}</td><td>${w.adminPoints}</td><td>${w.fieldPoints}</td><td>${w.presidencyPoints}</td><td>${w.totalScore}</td><td>${w.adminTasksCount || 0}</td><td>${w.workingHours || 0}</td>
                         <td>
                             <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:10px;" onclick="editReport('${w.key}')" title="تعديل"></i>
                             <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteReport('${w.key}')" title="حذف"></i>
                         </td>
                     </tr>`;
                 });
-                if(weeklyList.length === 0) html += `<tr><td colspan="8">لا توجد تقييمات أسبوعية مطابقة</td></tr>`;
+                if(weeklyList.length === 0) html += `<tr><td colspan="9">لا توجد تقييمات أسبوعية مطابقة</td></tr>`;
                 html += `</tbody></table></div>`;
             }
 
@@ -1195,18 +1174,18 @@
                 html += `<h4 style="color:var(--primary); border-bottom:1px solid #3b4d37; margin-top:15px;">تقييمات تخريج الدفعات المفصلة</h4>
                 <div class="table-responsive">
                 <table class="eval-table">
-                    <thead><tr><th>المدرب</th><th>التاريخ</th><th>حضور (10)</th><th>شرح (5)</th><th>رئاسة (5)</th><th>المجموع</th><th>التوجيه</th><th>الإجراءات</th></tr></thead>
+                    <thead><tr><th>المدرب</th><th>التاريخ</th><th>حضور</th><th>شرح</th><th>رئاسة</th><th>المجموع</th><th>أعمال إدارية</th><th>ساعات المباشرة</th><th>الإجراءات</th></tr></thead>
                     <tbody>`;
                 batchList.forEach(b => {
                     html += `<tr>
-                        <td>${b.trainerName}</td><td>${b.date}</td><td>${b.attendPoints}</td><td>${b.presentPoints}</td><td>${b.presidencyPoints}</td><td>${b.totalScore}</td><td>${b.forwardTarget || '-'}</td>
+                        <td>${b.trainerName}</td><td>${b.date}</td><td>${b.attendPoints}</td><td>${b.presentPoints}</td><td>${b.presidencyPoints}</td><td>${b.totalScore}</td><td>${b.adminTasksCount || 0}</td><td>${b.workingHours || 0}</td>
                         <td>
                             <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:10px;" onclick="editReport('${b.key}')" title="تعديل"></i>
                             <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteReport('${b.key}')" title="حذف"></i>
                         </td>
                     </tr>`;
                 });
-                if(batchList.length === 0) html += `<tr><td colspan="8">لا توجد تقييمات دفعات مطابقة</td></tr>`;
+                if(batchList.length === 0) html += `<tr><td colspan="9">لا توجد تقييمات دفعات مطابقة</td></tr>`;
                 html += `</tbody></table></div>`;
             }
 
@@ -1242,9 +1221,10 @@
             document.getElementById('weeklyAdminPoints').value = rep.adminPoints;
             document.getElementById('weeklyFieldPoints').value = rep.fieldPoints;
             document.getElementById('weeklyPresidencyPoints').value = rep.presidencyPoints;
+            document.getElementById('weeklyAdminTasks').value = rep.adminTasksCount || '';
+            document.getElementById('weeklyWorkingHours').value = rep.workingHours || '';
             document.getElementById('weeklyTotalScore').innerText = rep.totalScore;
             document.getElementById('weeklyNotes').value = rep.notes || '';
-            document.getElementById('weeklyForwardTarget').value = rep.forwardTarget || '';
             
             document.getElementById('btnSubmitWeekly').innerText = "تحديث التقييم الأسبوعي";
         } else if(rep.type === 'batch') {
@@ -1254,9 +1234,10 @@
             document.getElementById('batchAttendPoints').value = rep.attendPoints;
             document.getElementById('batchPresentPoints').value = rep.presentPoints;
             document.getElementById('batchPresidencyPoints').value = rep.presidencyPoints;
+            document.getElementById('batchAdminTasks').value = rep.adminTasksCount || '';
+            document.getElementById('batchWorkingHours').value = rep.workingHours || '';
             document.getElementById('batchTotalScore').innerText = rep.totalScore;
             document.getElementById('batchNotes').value = rep.notes || '';
-            document.getElementById('batchForwardTarget').value = rep.forwardTarget || '';
             
             document.getElementById('btnSubmitBatch').innerText = "تحديث تقييم الدفعة";
         }
@@ -1385,31 +1366,50 @@
         const currentYearMonth = now.toISOString().slice(0, 7); //YYYY-MM
 
         get(ref(db, 'eval_reports')).then((snap) => {
-            let scoresMap = {};
+            let statsMap = {};
 
             snap.forEach(child => {
                 const rep = child.val();
                 
                 // الفلترة للتأكد أن التقرير مضاف خلال الشهر الحالي فقط (من 1 إلى نهاية الشهر)
                 if(rep.trainerName && rep.date && rep.date.startsWith(currentYearMonth)) {
-                    if(!scoresMap[rep.trainerName]) scoresMap[rep.trainerName] = 0;
-                    scoresMap[rep.trainerName] += parseFloat(rep.totalScore) || 0;
+                    if(!statsMap[rep.trainerName]) {
+                        statsMap[rep.trainerName] = { score: 0, tasks: 0, hours: 0 };
+                    }
+                    statsMap[rep.trainerName].score += parseFloat(rep.totalScore) || 0;
+                    statsMap[rep.trainerName].tasks += parseInt(rep.adminTasksCount) || 0;
+                    statsMap[rep.trainerName].hours += parseFloat(rep.workingHours) || 0;
                 }
             });
 
             let topTrainer = null;
             let maxScore = 0; // عدم قبول النقاط الصفرية
+            let maxTasks = -1;
+            let topHours = 0;
 
-            Object.keys(scoresMap).forEach(name => {
-                if(scoresMap[name] > maxScore) {
-                    maxScore = scoresMap[name];
+            Object.keys(statsMap).forEach(name => {
+                const current = statsMap[name];
+                
+                // إذا كانت النقاط أعلى، يتم اختياره فوراً
+                if(current.score > maxScore) {
+                    maxScore = current.score;
+                    maxTasks = current.tasks;
+                    topHours = current.hours;
                     topTrainer = name;
+                } 
+                // في حالة التعادل في النقاط، يتم اللجوء للأعمال الإدارية
+                else if (current.score === maxScore && maxScore > 0) {
+                    if (current.tasks > maxTasks) {
+                        maxTasks = current.tasks;
+                        topHours = current.hours;
+                        topTrainer = name;
+                    }
                 }
             });
 
             if(topTrainer && maxScore > 0) {
                 document.getElementById('topTrainerName').innerText = topTrainer;
-                document.getElementById('topTrainerScore').innerText = `إجمالي النقاط المتراكمة: ${maxScore.toFixed(1)}`;
+                document.getElementById('topTrainerScore').innerText = `عدد النقاط: ${maxScore.toFixed(1)} | ساعات المباشرة: ${topHours} | الأعمال الإدارية: ${maxTasks}`;
             } else {
                 document.getElementById('topTrainerName').innerText = "لا يوجد مدرب لهذا الشهر حالياً";
                 document.getElementById('topTrainerScore').innerText = "";
