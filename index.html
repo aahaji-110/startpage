@@ -103,7 +103,6 @@
             transition: max-width 0.3s ease;
         }
 
-        /* توسيع الحاوية عند فتح نظام تقييم المدربين لاستيعاب الجداول */
         .container.wide-container {
             max-width: 750px;
         }
@@ -267,6 +266,10 @@
             overflow-x: auto;
             box-sizing: border-box;
         }
+
+        /* كلاسات التمييز والمقارنة الجديدة */
+        .highlight-gold { background: rgba(241, 196, 15, 0.15) !important; border: 2px solid #f1c40f !important; font-weight: bold; }
+        .badge-win { background: #f1c40f; color: #000; padding: 3px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; display:inline-block; }
     </style>
 </head>
 <body>
@@ -400,10 +403,10 @@
             <button id="btnTabBatch" class="eval-tab-btn" onclick="switchEvalTab('batch')">تقييم دفعة</button>
             <button id="btnTabManageTrainers" class="eval-tab-btn" onclick="switchEvalTab('manageTrainers')">إدارة المدربين</button>
             <button id="btnTabReports" class="eval-tab-btn" onclick="switchEvalTab('reports')">التقارير والإحصائيات</button>
-            <button id="btnTabAllTrainers" class="eval-tab-btn" onclick="switchEvalTab('allTrainers')">أداء الجميع الشامل</button>
+            <button id="btnTabAllTrainers" class="eval-tab-btn" onclick="switchEvalTab('allTrainers')">مقارنة أداء الجميع</button>
         </div>
 
-        <!-- 1. القسم الأول: التقييم الأسبوعي -->
+        <!-- 1. القسم الأول: التقييم الأسبوعي (المعدل حسب الطلب) -->
         <div id="weeklyTabSection">
             <select id="weeklyTrainerSelect" onchange="autoFillTrainerData('weekly')">
                 <option value="">اختر المدرب...</option>
@@ -412,23 +415,26 @@
             <input type="text" id="weeklyCitizenId" placeholder="Citizen ID" readonly>
             <input type="text" id="weeklyDiscordId" placeholder="Discord Copy ID" readonly>
 
-            <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">درجات التقييم</h4>
+            <!-- تعديل الترتيب ليصبح الإدخال بالأعمال والساعات أولاً -->
+            <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">سجل الأعمال (سيتم احتساب النقاط تلقائياً)</h4>
+            
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية:</label>
+            <input type="number" id="weeklyAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية" oninput="onWeeklyTasksChange()">
+
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد ساعات المباشرة (فوق 10 ساعات تحسب بنقاط):</label>
+            <input type="number" id="weeklyWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات" oninput="onWeeklyHoursChange()">
+
+            <h4 style="color:var(--primary); text-align:right; margin-top:20px; margin-bottom:5px;">درجات التقييم (قابلة للتعديل اليدوي)</h4>
             <label style="font-size:0.75rem; display:block; text-align:right;">نقاط الأعمال الإدارية (من 10):</label>
             <input type="number" id="weeklyAdminPoints" min="0" max="10" placeholder="0 - 10" oninput="calcWeeklyScore()">
             
-            <label style="font-size:0.75rem; display:block; text-align:right;">المباشرة الميدانية (من 5):</label>
+            <label style="font-size:0.75rem; display:block; text-align:right;">نقاط المباشرة الميدانية (من 5):</label>
             <input type="number" id="weeklyFieldPoints" min="0" max="5" placeholder="0 - 5" oninput="calcWeeklyScore()">
             
-            <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5):</label>
+            <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5 - يبقى فارغ للتعبئة اليدوية):</label>
             <input type="number" id="weeklyPresidencyPoints" min="0" max="5" placeholder="0 - 5" oninput="calcWeeklyScore()">
 
             <div class="score-box">المجموع النهائي: <span id="weeklyTotalScore">0</span> / 10</div>
-
-            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية (للفصل في التعادل):</label>
-            <input type="number" id="weeklyAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية">
-
-            <label style="font-size:0.75rem; display:block; text-align:right;">ساعات المباشرة الأسبوعية:</label>
-            <input type="number" id="weeklyWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات">
 
             <textarea id="weeklyNotes" placeholder="ملاحظات..." rows="2"></textarea>
 
@@ -540,12 +546,13 @@
             </button>
         </div>
 
-        <!-- 5. القسم الخامس: استعراض كامل أداء جميع المدربين (الجديد) -->
+        <!-- 5. القسم الخامس: استعراض شامل ومقارنة (المعدل حسب الطلب) -->
         <div id="allTrainersTabSection" class="hidden">
-            <h4 style="color:var(--primary); margin:10px 0; text-align:center;"><i class="fas fa-chart-column"></i> التقرير العام لأداء كافة المدربين</h4>
+            <h4 style="color:var(--primary); margin:10px 0; text-align:center;"><i class="fas fa-chart-column"></i> مقارنة أداء المدربين</h4>
             
             <div style="background: rgba(255,255,255,0.01); padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid var(--border);">
-                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">تحدبد نطاق الفترة الزمنية:</label>
+                
+                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">نطاق الفترة الزمنية:</label>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom:10px;">
                     <div>
                         <small style="font-size:0.7rem;">من تاريخ (اتركه فارغاً للكل):</small>
@@ -557,14 +564,26 @@
                     </div>
                 </div>
 
-                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">نوع التقييم:</label>
-                <select id="allTrainersTypeFilter" style="font-size:0.85rem;">
-                    <option value="both" selected>كافة التقييمات (الأسبوعي + الدفعات)</option>
-                    <option value="weekly">التقارير الأسبوعية فقط</option>
-                    <option value="batch">تقارير تخريج الدفعات فقط</option>
+                <!-- خيارات المقارنة والتحديد -->
+                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">تحديد المدربين للمقارنة:</label>
+                <div style="text-align: right; margin-bottom: 5px;">
+                    <button class="action-btn" style="padding:5px 10px; width:auto; font-size:0.7rem;" onclick="selectAllCompare(true)">تحديد الكل</button>
+                    <button class="action-btn" style="padding:5px 10px; width:auto; font-size:0.7rem; background:#222;" onclick="selectAllCompare(false)">إلغاء التحديد</button>
+                </div>
+                <div id="compareTrainersContainer" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px; text-align:right;">
+                    <!-- Checkboxes will be populated here -->
+                </div>
+
+                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">معيار المقارنة (الترتيب والرسم البياني):</label>
+                <select id="compareMetricFilter" style="font-size:0.85rem;">
+                    <option value="totalPoints" selected>المجموع الكلي (النقاط الأسبوعية + الدفعات)</option>
+                    <option value="weeklyPoints">النقاط الأسبوعية كاملة فقط</option>
+                    <option value="batchPoints">نقاط تخريج الدفعات كاملة فقط</option>
+                    <option value="adminTasks">إجمالي الأعمال الإدارية</option>
+                    <option value="workingHours">إجمالي ساعات المباشرة الميدانية</option>
                 </select>
 
-                <button class="action-btn" style="padding:10px; font-size:0.85rem;" onclick="generateAllTrainersOverview()">عرض تحليل الأداء الموحد</button>
+                <button class="action-btn" style="padding:10px; font-size:0.85rem;" onclick="generateAllTrainersOverview()">تشغيل المقارنة</button>
             </div>
 
             <div style="margin: 15px 0; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px;">
@@ -576,13 +595,16 @@
                     <thead>
                         <tr>
                             <th>المدرب</th>
-                            <th>عدد التقييمات</th>
+                            <th>الأعمال الإدارية</th>
+                            <th>الساعات المباشرة</th>
+                            <th>النقاط الأسبوعية</th>
+                            <th>نقاط الدفعات</th>
                             <th>إجمالي النقاط</th>
-                            <th>المتوسط العام</th>
+                            <th>ألقاب مدرب الشهر</th>
                         </tr>
                     </thead>
                     <tbody id="allTrainersTableBody">
-                        <tr><td colspan="4">اضغط على زر العرض للتحميل</td></tr>
+                        <tr><td colspan="7">اضغط على زر تشغيل المقارنة لعرض البيانات</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -618,7 +640,6 @@
     let chartInstance = null;
     let allTrainersChartInstance = null;
 
-    // متغيرات التعديل
     window.allFetchedReports = {};
     window.editingReportKey = null;
 
@@ -739,7 +760,6 @@
     function loadWingsAdminControls() {
         const container = document.getElementById('wingsControlsContainer');
         container.innerHTML = "جاري التحميل...";
-        
         get(ref(db, 'wings_settings')).then((snap) => {
             const settings = snap.val() || {};
             container.innerHTML = "";
@@ -765,13 +785,8 @@
         });
     }
 
-    window.updateWingStatus = (id, val) => { 
-        update(ref(db, `wings_settings/${id}`), { active: val }).then(() => loadWingsAdminControls());
-    };
-    window.updateWingTime = (id, type, val) => { 
-        let obj = {}; obj[type] = val; 
-        update(ref(db, `wings_settings/${id}`), obj); 
-    };
+    window.updateWingStatus = (id, val) => { update(ref(db, `wings_settings/${id}`), { active: val }).then(() => loadWingsAdminControls()); };
+    window.updateWingTime = (id, type, val) => { let obj = {}; obj[type] = val; update(ref(db, `wings_settings/${id}`), obj); };
 
     function listenToWingsSettings() {
         onValue(ref(db, 'wings_settings'), (snap) => {
@@ -893,11 +908,13 @@
             const selectB = document.getElementById('batchTrainerSelect');
             const selectR = document.getElementById('searchReportTrainer');
             const listContainer = document.getElementById('trainersProfilesListContainer');
+            const compareContainer = document.getElementById('compareTrainersContainer');
 
             selectW.innerHTML = '<option value="">اختر المدرب...</option>';
             selectB.innerHTML = '<option value="">اختر المدرب...</option>';
             selectR.innerHTML = '<option value="">اختر مدرب لعرض سجله الخاص...</option>';
             listContainer.innerHTML = '';
+            compareContainer.innerHTML = '';
 
             Object.keys(trainersProfiles).forEach(key => {
                 const item = trainersProfiles[key];
@@ -917,9 +934,20 @@
                         <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteTrainerProfile('${key}')" title="حذف"></i>
                     </div>
                 </div>`;
+
+                // تعبئة قائمة المقارنة (التشيك بوكس)
+                compareContainer.innerHTML += `
+                <label style="background:rgba(255,255,255,0.05); padding:5px 10px; border-radius:5px; border:1px solid var(--border); display:flex; align-items:center; gap:5px; font-size:0.8rem; cursor:pointer;">
+                    <input type="checkbox" class="compare-checkbox" value="${item.name}" checked> ${item.name}
+                </label>`;
             });
         });
     }
+
+    // دالة التحديد للمقارنة
+    window.selectAllCompare = (state) => {
+        document.querySelectorAll('.compare-checkbox').forEach(cb => cb.checked = state);
+    };
 
     window.saveTrainerProfile = () => {
         const name = document.getElementById('manageTrainerName').value.trim();
@@ -963,6 +991,28 @@
         }
     };
 
+    /* ========================================================
+       حساب التقييم الأسبوعي التلقائي (الأعمال + الساعات)
+       ======================================================== */
+    window.onWeeklyTasksChange = () => {
+        let tasks = parseInt(document.getElementById('weeklyAdminTasks').value) || 0;
+        // مجرد ما يعدي 10 أعمال يعطيه 10 نقاط
+        let pts = Math.min(tasks, 10);
+        document.getElementById('weeklyAdminPoints').value = pts;
+        calcWeeklyScore();
+    };
+
+    window.onWeeklyHoursChange = () => {
+        let hours = parseFloat(document.getElementById('weeklyWorkingHours').value) || 0;
+        let pts = 0;
+        // يحسب النقطة فقط إذا تجاوز 10 ساعات، نقطة لكل ساعة، حد أقصى 5 نقاط إضافية (15 ساعة)
+        if(hours > 10) {
+            pts = Math.floor(Math.min(hours - 10, 5));
+        }
+        document.getElementById('weeklyFieldPoints').value = Math.max(0, pts);
+        calcWeeklyScore();
+    };
+
     window.calcWeeklyScore = () => {
         const adminP = parseFloat(document.getElementById('weeklyAdminPoints').value) || 0;
         const fieldP = parseFloat(document.getElementById('weeklyFieldPoints').value) || 0;
@@ -996,6 +1046,7 @@
 
     function resetBatchForm() {
         window.editingReportKey = null;
+        // ... نفس الدالة السابقة
         document.getElementById('batchTrainerSelect').value = '';
         document.getElementById('batchCitizenId').value = '';
         document.getElementById('batchDiscordId').value = '';
@@ -1100,7 +1151,6 @@
         }
     };
 
-    // استرجاع المصفى بالتاريخ (من - إلى) ونوع التقرير مع إمكانية التعديل والحذف
     window.fetchReportsFiltered = () => {
         const selectedTrainerKey = document.getElementById('searchReportTrainer').value;
         const dateFrom = document.getElementById('searchReportDateFrom').value;
@@ -1116,16 +1166,14 @@
             let chartLabels = [];
             let chartScores = [];
 
-            window.allFetchedReports = {}; // تصفير التقارير المؤقتة
+            window.allFetchedReports = {};
 
             snap.forEach(child => {
                 const rep = child.val();
                 rep.key = child.key;
-                window.allFetchedReports[child.key] = rep; // حفظ البيانات محلياً للتعديل
+                window.allFetchedReports[child.key] = rep; 
                 
-                // مطابقة المدرب (إن حدد)
                 const matchTrainer = !selectedTrainerKey || rep.trainerKey === selectedTrainerKey;
-                // مطابقة النطاق الزمني
                 const matchDateFrom = !dateFrom || rep.date >= dateFrom;
                 const matchDateTo = !dateTo || rep.date <= dateTo;
 
@@ -1198,12 +1246,11 @@
         });
     };
 
-    // دوال التعديل والحذف الجديدة
     window.deleteReport = (key) => {
         if(confirm("هل أنت متأكد من حذف هذا التقرير نهائياً؟")) {
             remove(ref(db, 'eval_reports/' + key)).then(() => {
                 alert("تم حذف التقرير بنجاح");
-                fetchReportsFiltered(); // تحديث القائمة بعد الحذف
+                fetchReportsFiltered();
             });
         }
     };
@@ -1269,65 +1316,136 @@
         });
     }
 
-    /* الدالة الجديدة: استعراض وتقييم أداء جميع المدربين مع الرسم البياني الخاص بالعموم */
+    /* ========================================================
+       حساب ألقاب مدرب الشهر التاريخية لجميع المدربين
+       ======================================================== */
+    function calcHistoricalTopTrainers(reportsSnap) {
+        let monthsStats = {}; 
+        reportsSnap.forEach(child => {
+            let rep = child.val();
+            if(rep.trainerName && rep.date) {
+                let month = rep.date.slice(0, 7); // استخراج السنة والشهر YYYY-MM
+                if(!monthsStats[month]) monthsStats[month] = {};
+                if(!monthsStats[month][rep.trainerName]) monthsStats[month][rep.trainerName] = { score: 0, tasks: 0, hours: 0 };
+                
+                monthsStats[month][rep.trainerName].score += parseFloat(rep.totalScore) || 0;
+                monthsStats[month][rep.trainerName].tasks += parseInt(rep.adminTasksCount) || 0;
+                monthsStats[month][rep.trainerName].hours += parseFloat(rep.workingHours) || 0;
+            }
+        });
+        
+        let winCounts = {};
+        Object.keys(monthsStats).forEach(month => {
+            let maxScore = 0, maxTasks = -1, topTrainer = null;
+            Object.keys(monthsStats[month]).forEach(name => {
+                let st = monthsStats[month][name];
+                if(st.score > maxScore) { maxScore = st.score; maxTasks = st.tasks; topTrainer = name; }
+                else if(st.score === maxScore && maxScore > 0) {
+                    if(st.tasks > maxTasks) { maxTasks = st.tasks; topTrainer = name; }
+                }
+            });
+            if(topTrainer && maxScore > 0) {
+                winCounts[topTrainer] = (winCounts[topTrainer] || 0) + 1;
+            }
+        });
+        return winCounts;
+    }
+
+    /* ========================================================
+       نظام المقارنة واستعراض أداء الجميع
+       ======================================================== */
     window.generateAllTrainersOverview = () => {
         const dateFrom = document.getElementById('allTrainersDateFrom').value;
         const dateTo = document.getElementById('allTrainersDateTo').value;
-        const filterType = document.getElementById('allTrainersTypeFilter').value;
+        const metric = document.getElementById('compareMetricFilter').value;
+
+        // سحب المدربين المحددين من الفلاتر (التشيك بوكس)
+        const selectedTrainers = Array.from(document.querySelectorAll('.compare-checkbox:checked')).map(cb => cb.value);
+
+        if(selectedTrainers.length === 0) {
+            alert("الرجاء تحديد مدرب واحد على الأقل للمقارنة");
+            return;
+        }
 
         get(ref(db, 'eval_reports')).then((snap) => {
             let statsMap = {};
+            
+            // حساب ألقاب المدربين التاريخية قبل الفلترة
+            let winCounts = calcHistoricalTopTrainers(snap);
 
             snap.forEach(child => {
                 const rep = child.val();
                 const matchDateFrom = !dateFrom || rep.date >= dateFrom;
                 const matchDateTo = !dateTo || rep.date <= dateTo;
-                const matchType = (filterType === 'both') || (rep.type === filterType);
 
-                if (matchDateFrom && matchDateTo && matchType && rep.trainerName) {
+                if (matchDateFrom && matchDateTo && rep.trainerName && selectedTrainers.includes(rep.trainerName)) {
                     if (!statsMap[rep.trainerName]) {
-                        statsMap[rep.trainerName] = { count: 0, totalPoints: 0 };
+                        statsMap[rep.trainerName] = { count: 0, totalPoints: 0, weeklyPoints: 0, batchPoints: 0, adminTasks: 0, workingHours: 0 };
                     }
                     statsMap[rep.trainerName].count += 1;
-                    statsMap[rep.trainerName].totalPoints += parseFloat(rep.totalScore) || 0;
+                    let tScore = parseFloat(rep.totalScore) || 0;
+                    statsMap[rep.trainerName].totalPoints += tScore;
+                    if(rep.type === 'weekly') statsMap[rep.trainerName].weeklyPoints += tScore;
+                    if(rep.type === 'batch') statsMap[rep.trainerName].batchPoints += tScore;
+                    statsMap[rep.trainerName].adminTasks += parseInt(rep.adminTasksCount) || 0;
+                    statsMap[rep.trainerName].workingHours += parseFloat(rep.workingHours) || 0;
                 }
             });
 
             const labels = [];
-            const totals = [];
-            const averages = [];
+            const metricValues = [];
             const tbody = document.getElementById('allTrainersTableBody');
             tbody.innerHTML = '';
 
             const keys = Object.keys(statsMap);
             if (keys.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4">لا توجد تقارير مطابقة للفترة المحددة</td></tr>';
-            } else {
-                keys.forEach(trainerName => {
-                    const count = statsMap[trainerName].count;
-                    const total = statsMap[trainerName].totalPoints;
-                    const avg = (total / count).toFixed(1);
-
-                    labels.push(trainerName);
-                    totals.push(total);
-                    averages.push(avg);
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>${trainerName}</strong></td>
-                            <td>${count}</td>
-                            <td>${total.toFixed(1)}</td>
-                            <td><span style="color:var(--primary); font-weight:bold;">${avg}</span> / 10</td>
-                        </tr>
-                    `;
-                });
+                tbody.innerHTML = '<tr><td colspan="7">لا توجد تقارير مطابقة للمدربين والفترة المحددة</td></tr>';
+                renderAllTrainersChart([], [], '');
+                return;
             }
 
-            renderAllTrainersChart(labels, totals, averages);
+            // استخراج أعلى قيمة بناءً على المعيار المحدد لتمييزها في الجدول
+            let maxMetricVal = -1;
+            keys.forEach(k => {
+                let val = statsMap[k][metric];
+                if(val > maxMetricVal) maxMetricVal = val;
+            });
+
+            keys.forEach(trainerName => {
+                const st = statsMap[trainerName];
+                const val = st[metric];
+                labels.push(trainerName);
+                metricValues.push(val);
+
+                // التحقق مما إذا كان المدرب هو الأعلى في المعيار المختار
+                let isTop = (val === maxMetricVal && maxMetricVal > 0);
+                let rowClass = isTop ? 'class="highlight-gold"' : '';
+                let crown = isTop ? '<i class="fas fa-crown" style="color:#f1c40f; margin-left:5px;"></i>' : '';
+                
+                // جلب عدد مرات الفوز
+                let wins = winCounts[trainerName] || 0;
+                let winsBadge = wins > 0 ? `<span class="badge-win">${wins} 🏆</span>` : '-';
+
+                tbody.innerHTML += `
+                    <tr ${rowClass}>
+                        <td><strong>${crown} ${trainerName}</strong></td>
+                        <td>${st.adminTasks}</td>
+                        <td>${st.workingHours}</td>
+                        <td>${st.weeklyPoints.toFixed(1)}</td>
+                        <td>${st.batchPoints.toFixed(1)}</td>
+                        <td><span style="color:var(--primary); font-weight:bold;">${st.totalPoints.toFixed(1)}</span></td>
+                        <td>${winsBadge}</td>
+                    </tr>
+                `;
+            });
+
+            // جلب النص الخاص بالمعيار لتسمية الرسم البياني
+            let metricLabel = document.querySelector(`#compareMetricFilter option[value="${metric}"]`).text;
+            renderAllTrainersChart(labels, metricValues, metricLabel);
         });
     };
 
-    function renderAllTrainersChart(labels, totals, averages) {
+    function renderAllTrainersChart(labels, data, metricLabel) {
         const ctx = document.getElementById('allTrainersComparisonChart').getContext('2d');
         if (allTrainersChartInstance) allTrainersChartInstance.destroy();
 
@@ -1337,16 +1455,9 @@
                 labels: labels,
                 datasets: [
                     {
-                        label: 'إجمالي النقاط',
-                        data: totals,
-                        backgroundColor: 'rgba(92, 123, 82, 0.8)',
-                        borderColor: '#5c7b52',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'المتوسط العام',
-                        data: averages,
-                        backgroundColor: 'rgba(241, 196, 15, 0.7)',
+                        label: metricLabel,
+                        data: data,
+                        backgroundColor: 'rgba(241, 196, 15, 0.8)',
                         borderColor: '#f1c40f',
                         borderWidth: 1
                     }
@@ -1363,15 +1474,13 @@
 
     function calcTopTrainerOfMonth() {
         const now = new Date();
-        const currentYearMonth = now.toISOString().slice(0, 7); //YYYY-MM
+        const currentYearMonth = now.toISOString().slice(0, 7); 
 
         get(ref(db, 'eval_reports')).then((snap) => {
             let statsMap = {};
 
             snap.forEach(child => {
                 const rep = child.val();
-                
-                // الفلترة للتأكد أن التقرير مضاف خلال الشهر الحالي فقط (من 1 إلى نهاية الشهر)
                 if(rep.trainerName && rep.date && rep.date.startsWith(currentYearMonth)) {
                     if(!statsMap[rep.trainerName]) {
                         statsMap[rep.trainerName] = { score: 0, tasks: 0, hours: 0 };
@@ -1383,26 +1492,18 @@
             });
 
             let topTrainer = null;
-            let maxScore = 0; // عدم قبول النقاط الصفرية
+            let maxScore = 0; 
             let maxTasks = -1;
             let topHours = 0;
 
             Object.keys(statsMap).forEach(name => {
                 const current = statsMap[name];
-                
-                // إذا كانت النقاط أعلى، يتم اختياره فوراً
                 if(current.score > maxScore) {
-                    maxScore = current.score;
-                    maxTasks = current.tasks;
-                    topHours = current.hours;
-                    topTrainer = name;
+                    maxScore = current.score; maxTasks = current.tasks; topHours = current.hours; topTrainer = name;
                 } 
-                // في حالة التعادل في النقاط، يتم اللجوء للأعمال الإدارية
                 else if (current.score === maxScore && maxScore > 0) {
                     if (current.tasks > maxTasks) {
-                        maxTasks = current.tasks;
-                        topHours = current.hours;
-                        topTrainer = name;
+                        maxTasks = current.tasks; topHours = current.hours; topTrainer = name;
                     }
                 }
             });
@@ -1417,36 +1518,22 @@
         });
     }
 
-    // الدالة المُعدلة لحل مشكلة الصفحة الفارغة
     window.exportTrainerPDF = () => {
         const element = document.getElementById('pdfExportContainer');
-        
-        // التحقق مما إذا كان الموقع في الوضع الليلي
         const isDarkMode = !document.body.classList.contains('light-mode');
         
-        // تحويل الموقع مؤقتاً للوضع الفاتح لضمان طباعة النصوص بلون داكن على خلفية بيضاء
-        if (isDarkMode) {
-            document.body.classList.add('light-mode');
-        }
+        if (isDarkMode) document.body.classList.add('light-mode');
 
         const opt = {
             margin:       0.3,
             filename:     'تقرير_تقييم_مدرب.pdf',
             image:        { type: 'jpeg', quality: 1 },
-            html2canvas:  { 
-                scale: 2,
-                useCORS: true,
-                scrollY: 0,
-                windowY: 0
-            },
+            html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowY: 0 },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
-        // تنفيذ التصدير ثم إعادة الموقع للوضع الليلي بعد الانتهاء
         html2pdf().set(opt).from(element).save().then(() => {
-            if (isDarkMode) {
-                document.body.classList.remove('light-mode');
-            }
+            if (isDarkMode) document.body.classList.remove('light-mode');
         });
     };
 
