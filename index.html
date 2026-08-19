@@ -401,9 +401,10 @@
         <div class="eval-nav">
             <button id="btnTabWeekly" class="eval-tab-btn active" onclick="switchEvalTab('weekly')">تقييم أسبوعي</button>
             <button id="btnTabBatch" class="eval-tab-btn" onclick="switchEvalTab('batch')">تقييم دفعة</button>
-            <button id="btnTabManageTrainers" class="eval-tab-btn" onclick="switchEvalTab('manageTrainers')">إدارة المدربين</button>
             <button id="btnTabReports" class="eval-tab-btn" onclick="switchEvalTab('reports')">التقارير والإحصائيات</button>
             <button id="btnTabAllTrainers" class="eval-tab-btn" onclick="switchEvalTab('allTrainers')">مقارنة أداء الجميع</button>
+            <!-- تم نقل زر إدارة المدربين إلى النهاية هنا -->
+            <button id="btnTabManageTrainers" class="eval-tab-btn" onclick="switchEvalTab('manageTrainers')">إدارة المدربين</button>
         </div>
 
         <!-- 1. القسم الأول: التقييم الأسبوعي (المعدل حسب الطلب) -->
@@ -415,23 +416,22 @@
             <input type="text" id="weeklyCitizenId" placeholder="Citizen ID" readonly>
             <input type="text" id="weeklyDiscordId" placeholder="Discord Copy ID" readonly>
 
-            <!-- تعديل الترتيب ليصبح الإدخال بالأعمال والساعات أولاً -->
-            <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">سجل الأعمال (سيتم احتساب النقاط تلقائياً)</h4>
+            <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">سجل الأعمال </h4>
             
             <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية:</label>
             <input type="number" id="weeklyAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية" oninput="onWeeklyTasksChange()">
 
-            <label style="font-size:0.75rem; display:block; text-align:right;">عدد ساعات المباشرة (فوق 10 ساعات تحسب بنقاط):</label>
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد ساعات المباشرة:</label>
             <input type="number" id="weeklyWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات" oninput="onWeeklyHoursChange()">
 
-            <h4 style="color:var(--primary); text-align:right; margin-top:20px; margin-bottom:5px;">درجات التقييم (قابلة للتعديل اليدوي)</h4>
+            <h4 style="color:var(--primary); text-align:right; margin-top:20px; margin-bottom:5px;">درجات التقييم </h4>
             <label style="font-size:0.75rem; display:block; text-align:right;">نقاط الأعمال الإدارية (من 10):</label>
             <input type="number" id="weeklyAdminPoints" min="0" max="10" placeholder="0 - 10" oninput="calcWeeklyScore()">
             
             <label style="font-size:0.75rem; display:block; text-align:right;">نقاط المباشرة الميدانية (من 5):</label>
             <input type="number" id="weeklyFieldPoints" min="0" max="5" placeholder="0 - 5" oninput="calcWeeklyScore()">
             
-            <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5 - يبقى فارغ للتعبئة اليدوية):</label>
+            <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5 ):</label>
             <input type="number" id="weeklyPresidencyPoints" min="0" max="5" placeholder="0 - 5" oninput="calcWeeklyScore()">
 
             <div class="score-box">المجموع النهائي: <span id="weeklyTotalScore">0</span> / 10</div>
@@ -473,30 +473,18 @@
 
             <div class="score-box">المجموع النهائي: <span id="batchTotalScore">0</span> / 10</div>
 
-            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية (للفصل في التعادل):</label>
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية :</label>
             <input type="number" id="batchAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية">
 
-            <label style="font-size:0.75rem; display:block; text-align:right;">ساعات المباشرة خلال الدفعة:</label>
-            <input type="number" id="batchWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات">
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد المستجدين الذين تم الإشراف على اختبارهم:</label>
+            <input type="number" id="batchWorkingHours" min="0" step="1" placeholder="أدخل عدد المستجدين">
 
             <textarea id="batchNotes" placeholder="ملاحظات..." rows="2"></textarea>
 
             <button id="btnSubmitBatch" class="action-btn" onclick="submitBatchEval()">حفظ تقييم الدفعة</button>
         </div>
 
-        <!-- 3. القسم الثالث: إدارة المدربين -->
-        <div id="manageTrainersTabSection" class="hidden">
-            <h4 style="color:var(--primary); margin:10px 0;">إضافة / تعديل بيانات مدرب</h4>
-            <input type="text" id="manageTrainerName" placeholder="اسم المدرب كامل">
-            <input type="text" id="manageCitizenId" placeholder="Citizen ID">
-            <input type="text" id="manageDiscordId" placeholder="Discord Copy ID">
-            <button class="action-btn" onclick="saveTrainerProfile()">حفظ بيانات المدرب</button>
-
-            <h4 style="border-bottom:1px solid var(--border); padding-bottom:5px; margin-top:20px; text-align:right;">قائمة المدربين المتاحين:</h4>
-            <div id="trainersProfilesListContainer"></div>
-        </div>
-
-        <!-- 4. القسم الرابع: التقارير والفلترة المتقدمة -->
+        <!-- 3. القسم الثالث: التقارير والفلترة المتقدمة -->
         <div id="reportsTabSection" class="hidden">
             <div class="top-trainer-card" style="background: var(--bg-button); padding: 10px; border-radius: 10px; border: 1px solid var(--border); text-align: center; margin-bottom: 15px;">
                 <i class="fas fa-trophy" style="font-size: 1.8rem; color: #f1c40f;"></i>
@@ -505,9 +493,8 @@
                 <span id="topTrainerScore" style="font-size:0.8rem; color:#eee;"></span>
             </div>
 
-            <!-- خيارات الفلترة والتاريخ -->
             <div style="background: rgba(255,255,255,0.01); padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid var(--border);">
-                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">استرجاع التقارير بالفترة المحددة:</label>
+                <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">استرجاع التقارير:</label>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom:10px;">
                     <div>
                         <small style="font-size:0.7rem;">من تاريخ:</small>
@@ -546,7 +533,7 @@
             </button>
         </div>
 
-        <!-- 5. القسم الخامس: استعراض شامل ومقارنة (المعدل حسب الطلب) -->
+        <!-- 4. القسم الرابع: استعراض شامل ومقارنة (المعدل حسب الطلب) -->
         <div id="allTrainersTabSection" class="hidden">
             <h4 style="color:var(--primary); margin:10px 0; text-align:center;"><i class="fas fa-chart-column"></i> مقارنة أداء المدربين</h4>
             
@@ -564,14 +551,12 @@
                     </div>
                 </div>
 
-                <!-- خيارات المقارنة والتحديد -->
                 <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">تحديد المدربين للمقارنة:</label>
                 <div style="text-align: right; margin-bottom: 5px;">
                     <button class="action-btn" style="padding:5px 10px; width:auto; font-size:0.7rem;" onclick="selectAllCompare(true)">تحديد الكل</button>
                     <button class="action-btn" style="padding:5px 10px; width:auto; font-size:0.7rem; background:#222;" onclick="selectAllCompare(false)">إلغاء التحديد</button>
                 </div>
                 <div id="compareTrainersContainer" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px; text-align:right;">
-                    <!-- Checkboxes will be populated here -->
                 </div>
 
                 <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary);">معيار المقارنة (الترتيب والرسم البياني):</label>
@@ -608,6 +593,18 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- 5. القسم الخامس: إدارة المدربين (تم نقله للنهاية هنا) -->
+        <div id="manageTrainersTabSection" class="hidden">
+            <h4 style="color:var(--primary); margin:10px 0;">إضافة / تعديل بيانات مدرب</h4>
+            <input type="text" id="manageTrainerName" placeholder="اسم المدرب كامل">
+            <input type="text" id="manageCitizenId" placeholder="Citizen ID">
+            <input type="text" id="manageDiscordId" placeholder="Discord Copy ID">
+            <button class="action-btn" onclick="saveTrainerProfile()">حفظ بيانات المدرب</button>
+
+            <h4 style="border-bottom:1px solid var(--border); padding-bottom:5px; margin-top:20px; text-align:right;">قائمة المدربين:</h4>
+            <div id="trainersProfilesListContainer"></div>
         </div>
 
         <button class="action-btn" style="margin-top:20px;" onclick="hideEvaluationPage()">العودة للقائمة الرئيسية</button>
@@ -1046,7 +1043,6 @@
 
     function resetBatchForm() {
         window.editingReportKey = null;
-        // ... نفس الدالة السابقة
         document.getElementById('batchTrainerSelect').value = '';
         document.getElementById('batchCitizenId').value = '';
         document.getElementById('batchDiscordId').value = '';
