@@ -267,9 +267,38 @@
             box-sizing: border-box;
         }
 
-        /* كلاسات التمييز والمقارنة الجديدة */
         .highlight-gold { background: rgba(241, 196, 15, 0.15) !important; border: 2px solid #f1c40f !important; font-weight: bold; }
         .badge-win { background: #f1c40f; color: #000; padding: 3px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; display:inline-block; }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .task-input-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .task-input-box label {
+            font-size: 0.7rem;
+            color: var(--primary);
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        .task-input-box input {
+            padding: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+        .day-label {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 4px;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -370,7 +399,7 @@
             <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> اسألة الأختبار</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWruE20ouIiiRMx0pZ88R06yyoQyT_7d8kQPF6xr76-js6GQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-plane-departure"></i> الإجازات</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSetYpR477z32URo8oCHWpTdBvAwxz3A2lw9-QIIqdVeP2ny0w/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-slash"></i> الاستقالة</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTKfHMCul-m5DY6s1XDMnpBdtmHAyx5OC0I7-qFla26ZsKDA/viewform" target=" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTKfHMCul-m5DY6s1XDMnpBdtmHAyx5OC0I7-qFla26ZsKDA/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRQwKDFhx8_tiQvw4cVYFUY4r30DhLnfwhFGUfBiMyQ5BZdQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-file-upload"></i> التقارير</a>
             
             <button class="nav-item trainer-only" style="cursor:pointer; width:100%; font-family:'Cairo';" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
@@ -403,11 +432,10 @@
             <button id="btnTabBatch" class="eval-tab-btn" onclick="switchEvalTab('batch')">تقييم دفعة</button>
             <button id="btnTabReports" class="eval-tab-btn" onclick="switchEvalTab('reports')">التقارير والإحصائيات</button>
             <button id="btnTabAllTrainers" class="eval-tab-btn" onclick="switchEvalTab('allTrainers')">مقارنة أداء الجميع</button>
-            <!-- تم نقل زر إدارة المدربين إلى النهاية هنا -->
             <button id="btnTabManageTrainers" class="eval-tab-btn" onclick="switchEvalTab('manageTrainers')">إدارة المدربين</button>
         </div>
 
-        <!-- 1. القسم الأول: التقييم الأسبوعي (المعدل حسب الطلب) -->
+        <!-- 1. القسم الأول: التقييم الأسبوعي -->
         <div id="weeklyTabSection">
             <select id="weeklyTrainerSelect" onchange="autoFillTrainerData('weekly')">
                 <option value="">اختر المدرب...</option>
@@ -416,10 +444,65 @@
             <input type="text" id="weeklyCitizenId" placeholder="Citizen ID" readonly>
             <input type="text" id="weeklyDiscordId" placeholder="Discord Copy ID" readonly>
 
-            <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">سجل الأعمال </h4>
+            <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">سجل الأعمال</h4>
             
-            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية:</label>
-            <input type="number" id="weeklyAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية" oninput="onWeeklyTasksChange()">
+            <!-- تاريخ الفترة اليومي -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom:10px;">
+                <div>
+                    <label style="font-size:0.7rem; display:block; text-align:right; color:var(--primary); font-weight:bold;">من (اختر تاريخ):</label>
+                    <input type="date" id="weeklyDateFrom" style="font-size:0.8rem; margin-bottom:2px;" onchange="updateDayName('weeklyDateFrom', 'weeklyDateFromDay')">
+                    <span id="weeklyDateFromDay" class="day-label"></span>
+                </div>
+                <div>
+                    <label style="font-size:0.7rem; display:block; text-align:right; color:var(--primary); font-weight:bold;">إلى (اختر تاريخ):</label>
+                    <input type="date" id="weeklyDateTo" style="font-size:0.8rem; margin-bottom:2px;" onchange="updateDayName('weeklyDateTo', 'weeklyDateToDay')">
+                    <span id="weeklyDateToDay" class="day-label"></span>
+                </div>
+            </div>
+
+            <!-- مربعات إدخال تفاصيل الأعمال الإدارية الـ 9 -->
+            <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary); font-weight:bold; margin-bottom:5px;">تفاصيل الأعمال الإدارية:</label>
+            <div class="tasks-grid">
+                <div class="task-input-box">
+                    <label>ASK</label>
+                    <input type="number" id="task_ask" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>Give Role</label>
+                    <input type="number" id="task_give_role" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>Discisions</label>
+                    <input type="number" id="task_discisions" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>الاستدعاء</label>
+                    <input type="number" id="task_recall" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>المناقشه</label>
+                    <input type="number" id="task_discussion" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>التكت</label>
+                    <input type="number" id="task_ticket" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>الوينقات</label>
+                    <input type="number" id="task_wings" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>حضور الحسبه</label>
+                    <input type="number" id="task_hesba" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+                <div class="task-input-box">
+                    <label>اعمال اضافيه</label>
+                    <input type="number" id="task_extra" min="0" value="0" oninput="calculateTotalAdminTasks()">
+                </div>
+            </div>
+
+            <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية (المجموع):</label>
+            <input type="number" id="weeklyAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية" readonly style="background: rgba(92,123,82,0.1) !important;">
 
             <label style="font-size:0.75rem; display:block; text-align:right;">عدد ساعات المباشرة:</label>
             <input type="number" id="weeklyWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات" oninput="onWeeklyHoursChange()">
@@ -443,10 +526,16 @@
             <div class="table-responsive">
                 <table class="eval-table" id="weeklySummaryTable">
                     <thead>
-                        <tr><th>اسم المدرب</th><th>المجموع</th><th>الملاحظات</th></tr>
+                        <tr>
+                            <th>المدرب</th>
+                            <th>الاعمال الادارية</th>
+                            <th>ساعات المباشرة</th>
+                            <th>الفترة</th>
+                            <th>الملاحظات</th>
+                        </tr>
                     </thead>
                     <tbody id="weeklySummaryBody">
-                        <tr><td colspan="3">لا توجد تقييمات سريعة مسجلة</td></tr>
+                        <tr><td colspan="5">لا توجد تقييمات سريعة مسجلة</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -533,7 +622,7 @@
             </button>
         </div>
 
-        <!-- 4. القسم الرابع: استعراض شامل ومقارنة (المعدل حسب الطلب) -->
+        <!-- 4. القسم الرابع: استعراض شامل ومقارنة -->
         <div id="allTrainersTabSection" class="hidden">
             <h4 style="color:var(--primary); margin:10px 0; text-align:center;"><i class="fas fa-chart-column"></i> مقارنة أداء المدربين</h4>
             
@@ -595,12 +684,12 @@
             </div>
         </div>
 
-        <!-- 5. القسم الخامس: إدارة المدربين (تم نقله للنهاية هنا) -->
+        <!-- 5. القسم الخامس: إدارة المدربين -->
         <div id="manageTrainersTabSection" class="hidden">
             <h4 style="color:var(--primary); margin:10px 0;">إضافة / تعديل بيانات مدرب</h4>
             <input type="text" id="manageTrainerName" placeholder="اسم المدرب كامل">
             <input type="text" id="manageCitizenId" placeholder="Citizen ID">
-            <input type="text" id="manageDiscordId" placeholder="Discord Copy ID">
+            <input type="text" id="manageDiscordId" placeholder="ديسكورد المدرب (Discord Copy ID)">
             <button class="action-btn" onclick="saveTrainerProfile()">حفظ بيانات المدرب</button>
 
             <h4 style="border-bottom:1px solid var(--border); padding-bottom:5px; margin-top:20px; text-align:right;">قائمة المدربين:</h4>
@@ -866,7 +955,7 @@
     window.closeModalOutside = (e) => { if(e.target.id === 'adminModal') document.getElementById('adminModal').style.display = 'none'; };
 
     /* ========================================================
-       نظام واجهة تقييم المدربين (واجهة مستقلة)
+       نظام واجهة تقييم المدربين
        ======================================================== */
     
     window.showEvaluationPage = () => {
@@ -896,6 +985,35 @@
 
         if(type === 'reports') calcTopTrainerOfMonth();
         if(type === 'allTrainers') generateAllTrainersOverview();
+    };
+
+    // إظهار اسم اليوم عند اختيار التاريخ
+    window.updateDayName = (inputId, labelId) => {
+        const val = document.getElementById(inputId).value;
+        if(!val) {
+            document.getElementById(labelId).innerText = "";
+            return;
+        }
+        const d = new Date(val);
+        const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        const dayName = days[d.getDay()];
+        document.getElementById(labelId).innerText = `اليوم: ${dayName}`;
+    };
+
+    // جمع الأعمال الإدارية تلقائياً
+    window.calculateTotalAdminTasks = () => {
+        const taskIds = [
+            'task_ask', 'task_give_role', 'task_discisions',
+            'task_recall', 'task_discussion', 'task_ticket',
+            'task_wings', 'task_hesba', 'task_extra'
+        ];
+        let sum = 0;
+        taskIds.forEach(id => {
+            const val = parseInt(document.getElementById(id).value) || 0;
+            sum += val;
+        });
+        document.getElementById('weeklyAdminTasks').value = sum;
+        onWeeklyTasksChange();
     };
 
     function listenToTrainerProfiles() {
@@ -932,7 +1050,6 @@
                     </div>
                 </div>`;
 
-                // تعبئة قائمة المقارنة (التشيك بوكس)
                 compareContainer.innerHTML += `
                 <label style="background:rgba(255,255,255,0.05); padding:5px 10px; border-radius:5px; border:1px solid var(--border); display:flex; align-items:center; gap:5px; font-size:0.8rem; cursor:pointer;">
                     <input type="checkbox" class="compare-checkbox" value="${item.name}" checked> ${item.name}
@@ -941,7 +1058,6 @@
         });
     }
 
-    // دالة التحديد للمقارنة
     window.selectAllCompare = (state) => {
         document.querySelectorAll('.compare-checkbox').forEach(cb => cb.checked = state);
     };
@@ -988,12 +1104,8 @@
         }
     };
 
-    /* ========================================================
-       حساب التقييم الأسبوعي التلقائي (الأعمال + الساعات)
-       ======================================================== */
     window.onWeeklyTasksChange = () => {
         let tasks = parseInt(document.getElementById('weeklyAdminTasks').value) || 0;
-        // مجرد ما يعدي 10 أعمال يعطيه 10 نقاط
         let pts = Math.min(tasks, 10);
         document.getElementById('weeklyAdminPoints').value = pts;
         calcWeeklyScore();
@@ -1002,7 +1114,6 @@
     window.onWeeklyHoursChange = () => {
         let hours = parseFloat(document.getElementById('weeklyWorkingHours').value) || 0;
         let pts = 0;
-        // يحسب النقطة فقط إذا تجاوز 10 ساعات، نقطة لكل ساعة، حد أقصى 5 نقاط إضافية (15 ساعة)
         if(hours > 10) {
             pts = Math.floor(Math.min(hours - 10, 5));
         }
@@ -1031,10 +1142,22 @@
         document.getElementById('weeklyTrainerSelect').value = '';
         document.getElementById('weeklyCitizenId').value = '';
         document.getElementById('weeklyDiscordId').value = '';
+        document.getElementById('weeklyDateFrom').value = '';
+        document.getElementById('weeklyDateTo').value = '';
+        document.getElementById('weeklyDateFromDay').innerText = '';
+        document.getElementById('weeklyDateToDay').innerText = '';
+        
+        const taskIds = [
+            'task_ask', 'task_give_role', 'task_discisions',
+            'task_recall', 'task_discussion', 'task_ticket',
+            'task_wings', 'task_hesba', 'task_extra'
+        ];
+        taskIds.forEach(id => document.getElementById(id).value = '0');
+
         document.getElementById('weeklyAdminPoints').value = '';
         document.getElementById('weeklyFieldPoints').value = '';
         document.getElementById('weeklyPresidencyPoints').value = '';
-        document.getElementById('weeklyAdminTasks').value = '';
+        document.getElementById('weeklyAdminTasks').value = '0';
         document.getElementById('weeklyWorkingHours').value = '';
         document.getElementById('weeklyTotalScore').innerText = '0';
         document.getElementById('weeklyNotes').value = '';
@@ -1065,12 +1188,30 @@
         const notes = document.getElementById('weeklyNotes').value;
         const today = new Date().toISOString().split('T')[0];
 
+        const dateFrom = document.getElementById('weeklyDateFrom').value;
+        const dateTo = document.getElementById('weeklyDateTo').value;
+
+        const tasksDetail = {
+            ask: parseInt(document.getElementById('task_ask').value) || 0,
+            giveRole: parseInt(document.getElementById('task_give_role').value) || 0,
+            discisions: parseInt(document.getElementById('task_discisions').value) || 0,
+            recall: parseInt(document.getElementById('task_recall').value) || 0,
+            discussion: parseInt(document.getElementById('task_discussion').value) || 0,
+            ticket: parseInt(document.getElementById('task_ticket').value) || 0,
+            wings: parseInt(document.getElementById('task_wings').value) || 0,
+            hesba: parseInt(document.getElementById('task_hesba').value) || 0,
+            extra: parseInt(document.getElementById('task_extra').value) || 0
+        };
+
         const reportData = {
             type: 'weekly',
             trainerKey: key,
             trainerName: trainerName,
             citizenId: document.getElementById('weeklyCitizenId').value,
             discordId: document.getElementById('weeklyDiscordId').value,
+            dateFrom: dateFrom,
+            dateTo: dateTo,
+            tasksDetail: tasksDetail,
             adminPoints: document.getElementById('weeklyAdminPoints').value || 0,
             fieldPoints: document.getElementById('weeklyFieldPoints').value || 0,
             presidencyPoints: document.getElementById('weeklyPresidencyPoints').value || 0,
@@ -1097,7 +1238,20 @@
                 alert("تم حفظ التقييم الأسبوعي بنجاح");
                 const tbody = document.getElementById('weeklySummaryBody');
                 if(tbody.innerText.includes("لا توجد")) tbody.innerHTML = "";
-                tbody.innerHTML += `<tr><td>${trainerName}</td><td>${totalScore}</td><td>${notes || '-'}</td></tr>`;
+                
+                let periodStr = (dateFrom && dateTo) ? `من ${dateFrom} إلى ${dateTo}` : (dateFrom || dateTo || '-');
+                let adminTasksCount = reportData.adminTasksCount;
+                let workingHours = reportData.workingHours;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${trainerName}</td>
+                        <td>${adminTasksCount}</td>
+                        <td>${workingHours}</td>
+                        <td>${periodStr}</td>
+                        <td>${notes || '-'}</td>
+                    </tr>
+                `;
                 resetWeeklyForm();
             });
         }
@@ -1199,18 +1353,19 @@
                 html += `<h4 style="color:var(--primary); border-bottom:1px solid #3b4d37;">التقييمات الأسبوعية المفصلة</h4>
                 <div class="table-responsive">
                 <table class="eval-table">
-                    <thead><tr><th>المدرب</th><th>التاريخ</th><th>إداري</th><th>ميداني</th><th>رئاسة</th><th>المجموع</th><th>أعمال إدارية</th><th>ساعات المباشرة</th><th>الإجراءات</th></tr></thead>
+                    <thead><tr><th>المدرب</th><th>الأعمال الإدارية</th><th>ساعات المباشرة</th><th>الفترة</th><th>الملاحظات</th><th>الإجراءات</th></tr></thead>
                     <tbody>`;
                 weeklyList.forEach(w => {
+                    let periodStr = (w.dateFrom && w.dateTo) ? `من ${w.dateFrom} إلى ${w.dateTo}` : (w.dateFrom || w.dateTo || w.date || '-');
                     html += `<tr>
-                        <td>${w.trainerName}</td><td>${w.date}</td><td>${w.adminPoints}</td><td>${w.fieldPoints}</td><td>${w.presidencyPoints}</td><td>${w.totalScore}</td><td>${w.adminTasksCount || 0}</td><td>${w.workingHours || 0}</td>
+                        <td>${w.trainerName}</td><td>${w.adminTasksCount || 0}</td><td>${w.workingHours || 0}</td><td>${periodStr}</td><td>${w.notes || '-'}</td>
                         <td>
                             <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:10px;" onclick="editReport('${w.key}')" title="تعديل"></i>
                             <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteReport('${w.key}')" title="حذف"></i>
                         </td>
                     </tr>`;
                 });
-                if(weeklyList.length === 0) html += `<tr><td colspan="9">لا توجد تقييمات أسبوعية مطابقة</td></tr>`;
+                if(weeklyList.length === 0) html += `<tr><td colspan="6">لا توجد تقييمات أسبوعية مطابقة</td></tr>`;
                 html += `</tbody></table></div>`;
             }
 
@@ -1261,6 +1416,24 @@
             switchEvalTab('weekly');
             document.getElementById('weeklyTrainerSelect').value = rep.trainerKey;
             autoFillTrainerData('weekly');
+            
+            document.getElementById('weeklyDateFrom').value = rep.dateFrom || '';
+            document.getElementById('weeklyDateTo').value = rep.dateTo || '';
+            updateDayName('weeklyDateFrom', 'weeklyDateFromDay');
+            updateDayName('weeklyDateTo', 'weeklyDateToDay');
+
+            if(rep.tasksDetail) {
+                document.getElementById('task_ask').value = rep.tasksDetail.ask || 0;
+                document.getElementById('task_give_role').value = rep.tasksDetail.giveRole || 0;
+                document.getElementById('task_discisions').value = rep.tasksDetail.discisions || 0;
+                document.getElementById('task_recall').value = rep.tasksDetail.recall || 0;
+                document.getElementById('task_discussion').value = rep.tasksDetail.discussion || 0;
+                document.getElementById('task_ticket').value = rep.tasksDetail.ticket || 0;
+                document.getElementById('task_wings').value = rep.tasksDetail.wings || 0;
+                document.getElementById('task_hesba').value = rep.tasksDetail.hesba || 0;
+                document.getElementById('task_extra').value = rep.tasksDetail.extra || 0;
+            }
+
             document.getElementById('weeklyAdminPoints').value = rep.adminPoints;
             document.getElementById('weeklyFieldPoints').value = rep.fieldPoints;
             document.getElementById('weeklyPresidencyPoints').value = rep.presidencyPoints;
@@ -1312,15 +1485,12 @@
         });
     }
 
-    /* ========================================================
-       حساب ألقاب مدرب الشهر التاريخية لجميع المدربين
-       ======================================================== */
     function calcHistoricalTopTrainers(reportsSnap) {
         let monthsStats = {}; 
         reportsSnap.forEach(child => {
             let rep = child.val();
             if(rep.trainerName && rep.date) {
-                let month = rep.date.slice(0, 7); // استخراج السنة والشهر YYYY-MM
+                let month = rep.date.slice(0, 7);
                 if(!monthsStats[month]) monthsStats[month] = {};
                 if(!monthsStats[month][rep.trainerName]) monthsStats[month][rep.trainerName] = { score: 0, tasks: 0, hours: 0 };
                 
@@ -1347,15 +1517,11 @@
         return winCounts;
     }
 
-    /* ========================================================
-       نظام المقارنة واستعراض أداء الجميع
-       ======================================================== */
     window.generateAllTrainersOverview = () => {
         const dateFrom = document.getElementById('allTrainersDateFrom').value;
         const dateTo = document.getElementById('allTrainersDateTo').value;
         const metric = document.getElementById('compareMetricFilter').value;
 
-        // سحب المدربين المحددين من الفلاتر (التشيك بوكس)
         const selectedTrainers = Array.from(document.querySelectorAll('.compare-checkbox:checked')).map(cb => cb.value);
 
         if(selectedTrainers.length === 0) {
@@ -1366,7 +1532,6 @@
         get(ref(db, 'eval_reports')).then((snap) => {
             let statsMap = {};
             
-            // حساب ألقاب المدربين التاريخية قبل الفلترة
             let winCounts = calcHistoricalTopTrainers(snap);
 
             snap.forEach(child => {
@@ -1400,7 +1565,6 @@
                 return;
             }
 
-            // استخراج أعلى قيمة بناءً على المعيار المحدد لتمييزها في الجدول
             let maxMetricVal = -1;
             keys.forEach(k => {
                 let val = statsMap[k][metric];
@@ -1413,12 +1577,10 @@
                 labels.push(trainerName);
                 metricValues.push(val);
 
-                // التحقق مما إذا كان المدرب هو الأعلى في المعيار المختار
                 let isTop = (val === maxMetricVal && maxMetricVal > 0);
                 let rowClass = isTop ? 'class="highlight-gold"' : '';
                 let crown = isTop ? '<i class="fas fa-crown" style="color:#f1c40f; margin-left:5px;"></i>' : '';
                 
-                // جلب عدد مرات الفوز
                 let wins = winCounts[trainerName] || 0;
                 let winsBadge = wins > 0 ? `<span class="badge-win">${wins} 🏆</span>` : '-';
 
@@ -1435,7 +1597,6 @@
                 `;
             });
 
-            // جلب النص الخاص بالمعيار لتسمية الرسم البياني
             let metricLabel = document.querySelector(`#compareMetricFilter option[value="${metric}"]`).text;
             renderAllTrainersChart(labels, metricValues, metricLabel);
         });
