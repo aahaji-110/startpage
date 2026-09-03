@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> أكاديمية الصحة | EMS Academy</title>
+    <title>أكاديمية الصحة | EMS Academy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -104,7 +104,7 @@
         }
 
         .container.wide-container {
-            max-width: 750px;
+            max-width: 850px;
         }
 
         header {
@@ -268,7 +268,6 @@
         }
 
         .highlight-gold { background: rgba(241, 196, 15, 0.15) !important; border: 2px solid #f1c40f !important; font-weight: bold; }
-        .badge-win { background: #f1c40f; color: #000; padding: 3px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; display:inline-block; }
 
         .tasks-grid {
             display: grid;
@@ -299,6 +298,131 @@
             margin-top: 4px;
             display: block;
         }
+
+        /* --- أنماط تقرير الأداء الشامل المعتمدة (Central Los Santos Report Styling) --- */
+        .pdf-report-card {
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+            direction: rtl;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .pdf-header .title-area h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #1a202c;
+            font-weight: 900;
+        }
+        .pdf-header .title-area h4 {
+            margin: 2px 0 0 0;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+        .pdf-header-meta {
+            display: flex;
+            gap: 15px;
+            background: #f7fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #edf2f7;
+            font-size: 0.75rem;
+        }
+        .pdf-header-meta div { text-align: center; }
+        .pdf-header-meta strong { display: block; color: #2d3748; }
+
+        .pdf-section-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #2b6cb0;
+            border-right: 4px solid #2b6cb0;
+            padding-right: 8px;
+            margin: 15px 0 10px 0;
+        }
+
+        .pdf-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .pdf-stat-card {
+            background: #edf2f7;
+            padding: 10px 5px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .pdf-stat-card .num {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .pdf-stat-card .label {
+            font-size: 0.65rem;
+            color: #718096;
+            margin-top: 3px;
+        }
+
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        .pdf-table th {
+            background-color: #2d3748;
+            color: #ffffff;
+            padding: 8px;
+            border: 1px solid #1a202c;
+            font-weight: bold;
+        }
+        .pdf-table td {
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            text-align: center;
+            color: #2d3748;
+        }
+        .pdf-table tr:nth-child(even) { background-color: #f7fafc; }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.7rem;
+            display: inline-block;
+        }
+        .status-excellent { background: #c6f6d5; color: #22543d; }
+        .status-good { background: #bee3f8; color: #2b6cb0; }
+        .status-medium { background: #feebc8; color: #744210; }
+        .status-warning { background: #fed7d7; color: #9b2c2c; }
+
+        .pdf-notes-box {
+            background: #fffaf0;
+            border-right: 3px solid #dd6b20;
+            padding: 10px 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 0.75rem;
+            color: #7b341e;
+        }
+        .pdf-notes-box ul {
+            margin: 5px 0 0 0;
+            padding-right: 18px;
+        }
+        .pdf-notes-box li { margin-bottom: 3px; }
     </style>
 </head>
 <body>
@@ -409,7 +533,6 @@
                 <i class="fas fa-id-card"></i> التقديم على الونقات
             </button>
             
-            <!-- زر فتح حاسبة الساعات كصفحة مستقلة -->
             <button class="nav-item" style="cursor:pointer; width:100%; font-family:'Cairo'; grid-column: span 2;" onclick="showCalculatorPage()">
                 <i class="fas fa-clock"></i> حاسبة الساعات
             </button>
@@ -460,7 +583,6 @@
 
             <h4 style="color:var(--primary); text-align:right; margin-top:10px; margin-bottom:5px;">سجل الأعمال</h4>
             
-            <!-- تاريخ الفترة اليومي -->
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom:10px;">
                 <div>
                     <label style="font-size:0.7rem; display:block; text-align:right; color:var(--primary); font-weight:bold;">من (اختر تاريخ):</label>
@@ -474,7 +596,6 @@
                 </div>
             </div>
 
-            <!-- مربعات إدخال تفاصيل الأعمال الإدارية الـ 9 -->
             <label style="font-size:0.75rem; display:block; text-align:right; color:var(--primary); font-weight:bold; margin-bottom:5px;">تفاصيل الأعمال الإدارية:</label>
             <div class="tasks-grid">
                 <div class="task-input-box">
@@ -627,7 +748,7 @@
                 <canvas id="trainerPerformanceChart" height="150"></canvas>
             </div>
 
-            <div id="pdfExportContainer" style="background: var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border);">
+            <div id="pdfExportContainer">
                 <div id="singleTrainerReportsList"></div>
             </div>
 
@@ -688,11 +809,10 @@
                             <th>النقاط الأسبوعية</th>
                             <th>نقاط الدفعات</th>
                             <th>إجمالي النقاط</th>
-                            <th>ألقاب مدرب الشهر</th>
                         </tr>
                     </thead>
                     <tbody id="allTrainersTableBody">
-                        <tr><td colspan="7">اضغط على زر تشغيل المقارنة لعرض البيانات</td></tr>
+                        <tr><td colspan="6">اضغط على زر تشغيل المقارنة لعرض البيانات</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -762,7 +882,6 @@
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
     };
 
-    // --- دوال فتح وإغلاق صفحة حاسبة الساعات بشكل مستقل ---
     window.showCalculatorPage = () => {
         document.getElementById('dashboard').classList.add('hidden');
         document.getElementById('calculatorPage').classList.remove('hidden');
@@ -774,7 +893,6 @@
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('mainContainer').classList.remove('wide-container');
     };
-    // -----------------------------------------------------
 
     window.togglePass = (id) => {
         const p = document.getElementById(id);
@@ -882,7 +1000,7 @@
                 const div = document.createElement('div');
                 div.className = 'admin-control-item';
                 div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; justify-space-between; align-items:center;">
                         <strong>${wing.label}</strong>
                         <div class="status-toggle">
                             <button class="btn-on ${wingSet.active ? 'active' : ''}" onclick="updateWingStatus('${wing.id}', true)">ON</button>
@@ -983,7 +1101,7 @@
     window.closeModalOutside = (e) => { if(e.target.id === 'adminModal') document.getElementById('adminModal').style.display = 'none'; };
 
     /* ========================================================
-       نظام واجهة تقييم المدربين
+       نظام تقييم المدربين
        ======================================================== */
     
     window.showEvaluationPage = () => {
@@ -1015,7 +1133,6 @@
         if(type === 'allTrainers') generateAllTrainersOverview();
     };
 
-    // إظهار اسم اليوم عند اختيار التاريخ
     window.updateDayName = (inputId, labelId) => {
         const val = document.getElementById(inputId).value;
         if(!val) {
@@ -1028,7 +1145,6 @@
         document.getElementById(labelId).innerText = `اليوم: ${dayName}`;
     };
 
-    // جمع الأعمال الإدارية تلقائياً
     window.calculateTotalAdminTasks = () => {
         const taskIds = [
             'task_ask', 'task_give_role', 'task_discisions',
@@ -1337,12 +1453,16 @@
 
         get(ref(db, 'eval_reports')).then((snap) => {
             const container = document.getElementById('singleTrainerReportsList');
-            container.innerHTML = `<h3 style="color:var(--primary); text-align:center;">سجل التقارير والنتائج</h3>`;
+            container.innerHTML = "";
             
-            let weeklyList = [];
-            let batchList = [];
             let chartLabels = [];
             let chartScores = [];
+
+            let totalAdminTasks = 0;
+            let totalWorkingHours = 0;
+            
+            // كائن لتجميع بيانات كل مدرب في صف واحد دون تكرار
+            let trainerMap = {};
 
             window.allFetchedReports = {};
 
@@ -1356,69 +1476,156 @@
                 const matchDateTo = !dateTo || rep.date <= dateTo;
 
                 if(matchTrainer && matchDateFrom && matchDateTo) {
-                    if(rep.type === 'weekly' && (filterType === 'both' || filterType === 'weekly')) {
-                        weeklyList.push(rep);
+                    if((rep.type === 'weekly' && (filterType === 'both' || filterType === 'weekly')) ||
+                       (rep.type === 'batch' && (filterType === 'both' || filterType === 'batch'))) {
+
                         chartLabels.push(rep.date);
                         chartScores.push(rep.totalScore);
-                    }
-                    if(rep.type === 'batch' && (filterType === 'both' || filterType === 'batch')) {
-                        batchList.push(rep);
-                        chartLabels.push(rep.date);
-                        chartScores.push(rep.totalScore);
+
+                        let hours = parseFloat(rep.workingHours) || 0;
+                        let tasks = parseInt(rep.adminTasksCount) || 0;
+
+                        totalWorkingHours += hours;
+                        totalAdminTasks += tasks;
+
+                        // تجميع وتجميع بيانات المدرب
+                        if(!trainerMap[rep.trainerName]) {
+                            trainerMap[rep.trainerName] = { 
+                                name: rep.trainerName,
+                                hours: 0, 
+                                tasks: 0, 
+                                minDate: rep.dateFrom || rep.date,
+                                maxDate: rep.dateTo || rep.date,
+                                reportKeys: []
+                            };
+                        }
+                        
+                        trainerMap[rep.trainerName].hours += hours;
+                        trainerMap[rep.trainerName].tasks += tasks;
+                        trainerMap[rep.trainerName].reportKeys.push(rep.key);
+
+                        let curDate = rep.dateFrom || rep.date;
+                        if(curDate < trainerMap[rep.trainerName].minDate) trainerMap[rep.trainerName].minDate = curDate;
+                        let endDate = rep.dateTo || rep.date;
+                        if(endDate > trainerMap[rep.trainerName].maxDate) trainerMap[rep.trainerName].maxDate = endDate;
                     }
                 }
             });
 
-            let trainerTitle = selectedTrainerKey && trainersProfiles[selectedTrainerKey] ? trainersProfiles[selectedTrainerKey].name : 'عموم المدربين';
-            let cid = selectedTrainerKey && trainersProfiles[selectedTrainerKey] ? trainersProfiles[selectedTrainerKey].citizenId : '-';
-            let did = selectedTrainerKey && trainersProfiles[selectedTrainerKey] ? trainersProfiles[selectedTrainerKey].discordId : '-';
+            let trainerCount = Object.keys(trainerMap).length;
+            let avgHours = trainerCount > 0 ? (totalWorkingHours / trainerCount).toFixed(1) : 0;
+            let totalHoursAndTasks = totalWorkingHours + totalAdminTasks;
 
-            let html = `<div style="text-align:right; font-family:'Cairo';">
-                <p><strong>اسم المدرب / النطاق:</strong> ${trainerTitle}</p>
-                <p><strong>Citizen ID:</strong> ${cid} | <strong>Discord ID:</strong> ${did}</p>`;
+            let currentDateStr = new Date().toISOString().split('T')[0];
 
-            if(filterType === 'both' || filterType === 'weekly') {
-                html += `<h4 style="color:var(--primary); border-bottom:1px solid #3b4d37;">التقييمات الأسبوعية المفصلة</h4>
-                <div class="table-responsive">
-                <table class="eval-table">
-                    <thead><tr><th>المدرب</th><th>الأعمال الإدارية</th><th>ساعات المباشرة</th><th>الفترة</th><th>الملاحظات</th><th>الإجراءات</th></tr></thead>
+            let html = `
+            <div class="pdf-report-card">
+                <div class="pdf-header">
+                    <div class="title-area">
+                        <h2>CENTRAL LOS SANTOS EMS ACADEMY</h2>
+                        <h4>التقرير الأسبوعي الشامل - تقييم أداء المدربين (قسم التدريب والاعتماد)</h4>
+                    </div>
+                    <div class="pdf-header-meta">
+                        <div><strong>حالة التقرير</strong><span style="color:#2b6cb0;">معتمد</span></div>
+                        <div><strong>تاريخ الإصدار</strong><span>${currentDateStr}</span></div>
+                    </div>
+                </div>
+
+                <div class="pdf-section-title">ملخص الأداء العام</div>
+
+                <div class="pdf-stats-grid">
+                    <div class="pdf-stat-card">
+                        <div class="num">${trainerCount}</div>
+                        <div class="label">عدد المدربين</div>
+                    </div>
+                    <div class="pdf-stat-card">
+                        <div class="num">${totalWorkingHours}</div>
+                        <div class="label">إجمالي ساعات المباشرة</div>
+                    </div>
+                    <div class="pdf-stat-card">
+                        <div class="num">${totalAdminTasks}</div>
+                        <div class="label">إجمالي الأعمال الإدارية</div>
+                    </div>
+                    <div class="pdf-stat-card">
+                        <div class="num">${totalHoursAndTasks}</div>
+                        <div class="label">إجمالي الساعات الكلي</div>
+                    </div>
+                    <div class="pdf-stat-card">
+                        <div class="num">${avgHours}</div>
+                        <div class="label">متوسط المباشرة للمدرب</div>
+                    </div>
+                </div>
+
+                <div class="pdf-section-title">تفاصيل تقييم المدربين (دمج التقرير الموحد لكل مدرب)</div>
+                
+                <table class="pdf-table">
+                    <thead>
+                        <tr>
+                            <th>المدرب</th>
+                            <th>ساعات المباشرة</th>
+                            <th>الأعمال الإدارية</th>
+                            <th>الفترة الزمنية للتقرير</th>
+                            <th>الإجمالي الكلي</th>
+                            <th>التقييم</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
                     <tbody>`;
-                weeklyList.forEach(w => {
-                    let periodStr = (w.dateFrom && w.dateTo) ? `من ${w.dateFrom} إلى ${w.dateTo}` : (w.dateFrom || w.dateTo || w.date || '-');
+
+            if(trainerCount === 0) {
+                html += `<tr><td colspan="7">لا توجد تقارير مطابقة للمدد المحددة</td></tr>`;
+            } else {
+                Object.keys(trainerMap).forEach(tName => {
+                    let item = trainerMap[tName];
+                    let periodStr = (item.minDate && item.maxDate && item.minDate !== item.maxDate) ? `${item.minDate} إلى ${item.maxDate}` : (item.minDate || '-');
+                    let total = item.hours + item.tasks;
+
+                    let statusText = "ممتاز";
+                    let statusClass = "status-excellent";
+
+                    if(total < 30) {
+                        statusText = "بحاجة متابعة";
+                        statusClass = "status-warning";
+                    } else if(total < 100) {
+                        statusText = "متوسط";
+                        statusClass = "status-medium";
+                    } else if(total < 250) {
+                        statusText = "جيد";
+                        statusClass = "status-good";
+                    }
+
+                    let firstKey = item.reportKeys[0];
+
                     html += `<tr>
-                        <td>${w.trainerName}</td><td>${w.adminTasksCount || 0}</td><td>${w.workingHours || 0}</td><td>${periodStr}</td><td>${w.notes || '-'}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.hours}</td>
+                        <td>${item.tasks}</td>
+                        <td>${periodStr}</td>
+                        <td><strong>${total}</strong></td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         <td>
-                            <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:10px;" onclick="editReport('${w.key}')" title="تعديل"></i>
-                            <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteReport('${w.key}')" title="حذف"></i>
+                            <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:10px;" onclick="editReport('${firstKey}')" title="تعديل أحدث تسجيل"></i>
+                            <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteReport('${firstKey}')" title="حذف أحدث تسجيل"></i>
                         </td>
                     </tr>`;
                 });
-                if(weeklyList.length === 0) html += `<tr><td colspan="6">لا توجد تقييمات أسبوعية مطابقة</td></tr>`;
-                html += `</tbody></table></div>`;
             }
 
-            if(filterType === 'both' || filterType === 'batch') {
-                html += `<h4 style="color:var(--primary); border-bottom:1px solid #3b4d37; margin-top:15px;">تقييمات تخريج الدفعات المفصلة</h4>
-                <div class="table-responsive">
-                <table class="eval-table">
-                    <thead><tr><th>المدرب</th><th>التاريخ</th><th>حضور</th><th>شرح</th><th>رئاسة</th><th>المجموع</th><th>أعمال إدارية</th><th>ساعات المباشرة</th><th>الإجراءات</th></tr></thead>
-                    <tbody>`;
-                batchList.forEach(b => {
-                    html += `<tr>
-                        <td>${b.trainerName}</td><td>${b.date}</td><td>${b.attendPoints}</td><td>${b.presentPoints}</td><td>${b.presidencyPoints}</td><td>${b.totalScore}</td><td>${b.adminTasksCount || 0}</td><td>${b.workingHours || 0}</td>
-                        <td>
-                            <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:10px;" onclick="editReport('${b.key}')" title="تعديل"></i>
-                            <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteReport('${b.key}')" title="حذف"></i>
-                        </td>
-                    </tr>`;
-                });
-                if(batchList.length === 0) html += `<tr><td colspan="9">لا توجد تقييمات دفعات مطابقة</td></tr>`;
-                html += `</tbody></table></div>`;
-            }
+            html += `
+                    </tbody>
+                </table>
 
-            html += `</div>`;
+                <div class="pdf-notes-box">
+                    <strong>ملاحظات وتوصيات:</strong>
+                    <ul>
+                        <li>تم دمج كافة السجلات والأعمال الإدارية والميدانية لكل مدرب في صف واحد لمنع التكرار وضمان شمولية التقييم.</li>
+                        <li>المدربون المسجلون ضمن خانة "بحاجة متابعة" ينصح بالتواصل معهم لمراجعة ساعات الأداء قبل اتخاذ الإجراءات الإدارية.</li>
+                        <li>يرجى اعتماد هذا التقرير أسبوعياً لربطه بملف نقاط وترقيات الأكاديمية.</li>
+                    </ul>
+                </div>
+            </div>`;
 
-            container.innerHTML += html;
+            container.innerHTML = html;
             document.getElementById('btnExportPDF').classList.remove('hidden');
 
             renderPerformanceChart(chartLabels, chartScores);
@@ -1513,38 +1720,6 @@
         });
     }
 
-    function calcHistoricalTopTrainers(reportsSnap) {
-        let monthsStats = {}; 
-        reportsSnap.forEach(child => {
-            let rep = child.val();
-            if(rep.trainerName && rep.date) {
-                let month = rep.date.slice(0, 7);
-                if(!monthsStats[month]) monthsStats[month] = {};
-                if(!monthsStats[month][rep.trainerName]) monthsStats[month][rep.trainerName] = { score: 0, tasks: 0, hours: 0 };
-                
-                monthsStats[month][rep.trainerName].score += parseFloat(rep.totalScore) || 0;
-                monthsStats[month][rep.trainerName].tasks += parseInt(rep.adminTasksCount) || 0;
-                monthsStats[month][rep.trainerName].hours += parseFloat(rep.workingHours) || 0;
-            }
-        });
-        
-        let winCounts = {};
-        Object.keys(monthsStats).forEach(month => {
-            let maxScore = 0, maxTasks = -1, topTrainer = null;
-            Object.keys(monthsStats[month]).forEach(name => {
-                let st = monthsStats[month][name];
-                if(st.score > maxScore) { maxScore = st.score; maxTasks = st.tasks; topTrainer = name; }
-                else if(st.score === maxScore && maxScore > 0) {
-                    if(st.tasks > maxTasks) { maxTasks = st.tasks; topTrainer = name; }
-                }
-            });
-            if(topTrainer && maxScore > 0) {
-                winCounts[topTrainer] = (winCounts[topTrainer] || 0) + 1;
-            }
-        });
-        return winCounts;
-    }
-
     window.generateAllTrainersOverview = () => {
         const dateFrom = document.getElementById('allTrainersDateFrom').value;
         const dateTo = document.getElementById('allTrainersDateTo').value;
@@ -1559,8 +1734,6 @@
 
         get(ref(db, 'eval_reports')).then((snap) => {
             let statsMap = {};
-            
-            let winCounts = calcHistoricalTopTrainers(snap);
 
             snap.forEach(child => {
                 const rep = child.val();
@@ -1588,7 +1761,7 @@
 
             const keys = Object.keys(statsMap);
             if (keys.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7">لا توجد تقارير مطابقة للمدربين والفترة المحددة</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6">لا توجد تقارير مطابقة للمدربين والفترة المحددة</td></tr>';
                 renderAllTrainersChart([], [], '');
                 return;
             }
@@ -1608,9 +1781,6 @@
                 let isTop = (val === maxMetricVal && maxMetricVal > 0);
                 let rowClass = isTop ? 'class="highlight-gold"' : '';
                 let crown = isTop ? '<i class="fas fa-crown" style="color:#f1c40f; margin-left:5px;"></i>' : '';
-                
-                let wins = winCounts[trainerName] || 0;
-                let winsBadge = wins > 0 ? `<span class="badge-win">${wins} 🏆</span>` : '-';
 
                 tbody.innerHTML += `
                     <tr ${rowClass}>
@@ -1620,7 +1790,6 @@
                         <td>${st.weeklyPoints.toFixed(1)}</td>
                         <td>${st.batchPoints.toFixed(1)}</td>
                         <td><span style="color:var(--primary); font-weight:bold;">${st.totalPoints.toFixed(1)}</span></td>
-                        <td>${winsBadge}</td>
                     </tr>
                 `;
             });
@@ -1664,6 +1833,7 @@
         get(ref(db, 'eval_reports')).then((snap) => {
             let statsMap = {};
 
+            // تجميع المجموع الإجمالي لكافة تقارير الشهر الحالي
             snap.forEach(child => {
                 const rep = child.val();
                 if(rep.trainerName && rep.date && rep.date.startsWith(currentYearMonth)) {
@@ -1676,26 +1846,43 @@
                 }
             });
 
-            let topTrainer = null;
-            let maxScore = 0; 
-            let maxTasks = -1;
-            let topHours = 0;
+            let names = Object.keys(statsMap);
+            if(names.length === 0) {
+                document.getElementById('topTrainerName').innerText = "لا يوجد مدرب لهذا الشهر حالياً";
+                document.getElementById('topTrainerScore').innerText = "";
+                return;
+            }
 
-            Object.keys(statsMap).forEach(name => {
-                const current = statsMap[name];
-                if(current.score > maxScore) {
-                    maxScore = current.score; maxTasks = current.tasks; topHours = current.hours; topTrainer = name;
-                } 
-                else if (current.score === maxScore && maxScore > 0) {
-                    if (current.tasks > maxTasks) {
-                        maxTasks = current.tasks; topHours = current.hours; topTrainer = name;
-                    }
+            // إيجاد الحدود القصوى لكل معيار لحساب النسبة الموزونة
+            let maxTasks = 0, maxHours = 0, maxScore = 0;
+            names.forEach(name => {
+                if(statsMap[name].tasks > maxTasks) maxTasks = statsMap[name].tasks;
+                if(statsMap[name].hours > maxHours) maxHours = statsMap[name].hours;
+                if(statsMap[name].score > maxScore) maxScore = statsMap[name].score;
+            });
+
+            let topTrainer = null;
+            let maxWeightedRank = -1;
+
+            // تطبيق معيار التقييم الموزون الجديد: 60% أعمال إدارية، 30% ساعات مباشرة، 10% إجمالي النقاط
+            names.forEach(name => {
+                let st = statsMap[name];
+                let normTasks = maxTasks > 0 ? (st.tasks / maxTasks) : 0;
+                let normHours = maxHours > 0 ? (st.hours / maxHours) : 0;
+                let normScore = maxScore > 0 ? (st.score / maxScore) : 0;
+
+                let weightedRank = (normTasks * 0.60) + (normHours * 0.30) + (normScore * 0.10);
+
+                if(weightedRank > maxWeightedRank) {
+                    maxWeightedRank = weightedRank;
+                    topTrainer = name;
                 }
             });
 
-            if(topTrainer && maxScore > 0) {
+            if(topTrainer && maxWeightedRank > 0) {
+                let st = statsMap[topTrainer];
                 document.getElementById('topTrainerName').innerText = topTrainer;
-                document.getElementById('topTrainerScore').innerText = `عدد النقاط: ${maxScore.toFixed(1)} | ساعات المباشرة: ${topHours} | الأعمال الإدارية: ${maxTasks}`;
+                document.getElementById('topTrainerScore').innerText = `الأعمال الإدارية: ${st.tasks} (60%) | ساعات المباشرة: ${st.hours} (30%) | إجمالي النقاط: ${st.score.toFixed(1)} (10%)`;
             } else {
                 document.getElementById('topTrainerName').innerText = "لا يوجد مدرب لهذا الشهر حالياً";
                 document.getElementById('topTrainerScore').innerText = "";
@@ -1711,7 +1898,7 @@
 
         const opt = {
             margin:       0.3,
-            filename:     'تقرير_تقييم_مدرب.pdf',
+            filename:     'تقرير_أداء_المدربين_الأسبوعي.pdf',
             image:        { type: 'jpeg', quality: 1 },
             html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowY: 0 },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
