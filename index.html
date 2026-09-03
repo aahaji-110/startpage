@@ -408,6 +408,11 @@
             <button class="nav-item" style="cursor:pointer; width:100%; font-family:'Cairo';" onclick="document.getElementById('applyWingsMenu').classList.toggle('hidden')">
                 <i class="fas fa-id-card"></i> التقديم على الونقات
             </button>
+            
+            <!-- زر فتح حاسبة الساعات كصفحة مستقلة -->
+            <button class="nav-item" style="cursor:pointer; width:100%; font-family:'Cairo'; grid-column: span 2;" onclick="showCalculatorPage()">
+                <i class="fas fa-clock"></i> حاسبة الساعات
+            </button>
         </div>
 
         <div id="wingsMenu" class="hidden trainer-only" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:10px;">
@@ -421,6 +426,15 @@
         <div id="applyWingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-top:10px;"></div>
 
         <button class="action-btn" style="margin-top:20px; font-size:0.8rem;" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <!-- صفحة حاسبة الساعات (واجهة مستقلة) -->
+    <div id="calculatorPage" class="hidden">
+        <h3 style="color: var(--primary); margin-top:0; text-align:center;"><i class="fas fa-clock"></i> حاسبة الساعات</h3>
+        <div style="width: 100%; height: 75vh; border-radius: 15px; overflow: hidden; border: 1px solid var(--border);">
+            <iframe src="https://healthapp-apbweruv.manus.space" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+        <button class="action-btn" style="margin-top:20px;" onclick="hideCalculatorPage()">العودة للقائمة الرئيسية</button>
     </div>
 
     <!-- صفحة تقييم المدربين (واجهة مستقلة) -->
@@ -747,6 +761,20 @@
         document.body.classList.toggle('light-mode');
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
     };
+
+    // --- دوال فتح وإغلاق صفحة حاسبة الساعات بشكل مستقل ---
+    window.showCalculatorPage = () => {
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('calculatorPage').classList.remove('hidden');
+        document.getElementById('mainContainer').classList.add('wide-container');
+    };
+
+    window.hideCalculatorPage = () => {
+        document.getElementById('calculatorPage').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('mainContainer').classList.remove('wide-container');
+    };
+    // -----------------------------------------------------
 
     window.togglePass = (id) => {
         const p = document.getElementById(id);
