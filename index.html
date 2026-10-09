@@ -615,7 +615,7 @@
                     <input type="number" id="task_recall" min="0" value="0" oninput="calculateTotalAdminTasks()">
                 </div>
                 <div class="task-input-box">
-                    <label>discussion</label>
+                    <label>المناقشه</label>
                     <input type="number" id="task_discussion" min="0" value="0" oninput="calculateTotalAdminTasks()">
                 </div>
                 <div class="task-input-box">
@@ -642,17 +642,17 @@
             <label style="font-size:0.75rem; display:block; text-align:right;">عدد ساعات المباشرة:</label>
             <input type="number" id="weeklyWorkingHours" min="0" step="0.5" placeholder="أدخل عدد الساعات" oninput="onWeeklyHoursChange()">
 
-            <h4 style="color:var(--primary); text-align:right; margin-top:20px; margin-bottom:5px;">درجات التقييم</h4>
+            <h4 style="color:var(--primary); text-align:right; margin-top:20px; margin-bottom:5px;">درجات التقييم </h4>
             <label style="font-size:0.75rem; display:block; text-align:right;">نقاط الأعمال الإدارية (من 10):</label>
             <input type="number" id="weeklyAdminPoints" min="0" max="10" placeholder="0 - 10" oninput="calcWeeklyScore()">
             
             <label style="font-size:0.75rem; display:block; text-align:right;">نقاط المباشرة الميدانية (من 5):</label>
             <input type="number" id="weeklyFieldPoints" min="0" max="5" placeholder="0 - 5" oninput="calcWeeklyScore()">
             
-            <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5):</label>
+            <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5 ):</label>
             <input type="number" id="weeklyPresidencyPoints" min="0" max="5" placeholder="0 - 5" oninput="calcWeeklyScore()">
 
-            <div class="score-box">المجموع النهائي: <span id="weeklyTotalScore">0</span> / 20</div>
+            <div class="score-box">المجموع النهائي: <span id="weeklyTotalScore">0</span> / 10</div>
 
             <textarea id="weeklyNotes" placeholder="ملاحظات..." rows="2"></textarea>
 
@@ -695,7 +695,7 @@
             <label style="font-size:0.75rem; display:block; text-align:right;">تقييم الرئاسة (من 5):</label>
             <input type="number" id="batchPresidencyPoints" min="0" max="5" placeholder="0 - 5" oninput="calcBatchScore()">
 
-            <div class="score-box">المجموع النهائي: <span id="batchTotalScore">0</span> / 20</div>
+            <div class="score-box">المجموع النهائي: <span id="batchTotalScore">0</span> / 10</div>
 
             <label style="font-size:0.75rem; display:block; text-align:right;">عدد الأعمال الإدارية :</label>
             <input type="number" id="batchAdminTasks" min="0" placeholder="أدخل عدد الأعمال الإدارية">
@@ -1269,7 +1269,7 @@
         const adminP = parseFloat(document.getElementById('weeklyAdminPoints').value) || 0;
         const fieldP = parseFloat(document.getElementById('weeklyFieldPoints').value) || 0;
         const presP = parseFloat(document.getElementById('weeklyPresidencyPoints').value) || 0;
-        const total = adminP + fieldP + presP; // المجموع المباشر من 20
+        const total = ((adminP + fieldP + presP) / 20) * 10;
         document.getElementById('weeklyTotalScore').innerText = total.toFixed(1);
     };
 
@@ -1277,7 +1277,7 @@
         const attP = parseFloat(document.getElementById('batchAttendPoints').value) || 0;
         const presnP = parseFloat(document.getElementById('batchPresentPoints').value) || 0;
         const presP = parseFloat(document.getElementById('batchPresidencyPoints').value) || 0;
-        const total = attP + presnP + presP; // المجموع المباشر من 20
+        const total = ((attP + presnP + presP) / 20) * 10;
         document.getElementById('batchTotalScore').innerText = total.toFixed(1);
     };
 
@@ -1363,13 +1363,12 @@
             workingHours: parseFloat(document.getElementById('weeklyWorkingHours').value) || 0,
             totalScore: totalScore,
             notes: notes,
-            date: today,
+            date: dateFrom || today, // اعتماد تاريخ البداية كمرجع أساسي للبحث والفلترة
             timestamp: Date.now()
         };
 
         if (window.editingReportKey) {
             const oldRep = window.allFetchedReports[window.editingReportKey];
-            reportData.date = oldRep.date;
             reportData.timestamp = oldRep.timestamp;
             update(ref(db, 'eval_reports/' + window.editingReportKey), reportData).then(() => {
                 alert("تم تحديث التقييم بنجاح");
@@ -1429,7 +1428,6 @@
 
         if (window.editingReportKey) {
             const oldRep = window.allFetchedReports[window.editingReportKey];
-            reportData.date = oldRep.date;
             reportData.timestamp = oldRep.timestamp;
             update(ref(db, 'eval_reports/' + window.editingReportKey), reportData).then(() => {
                 alert("تم تحديث التقييم بنجاح");
@@ -1462,7 +1460,6 @@
             let totalWorkingHours = 0;
             
             let trainerMap = {};
-
             window.allFetchedReports = {};
 
             snap.forEach(child => {
@@ -1471,8 +1468,20 @@
                 window.allFetchedReports[child.key] = rep; 
                 
                 const matchTrainer = !selectedTrainerKey || rep.trainerKey === selectedTrainerKey;
-                const matchDateFrom = !dateFrom || rep.date >= dateFrom;
-                const matchDateTo = !dateTo || rep.date <= dateTo;
+                
+                // تحسين الفلترة لتشمل النطاق الزمني بشكل دقيق (تاريخ البداية والنهاية أو تاريخ الحفظ)
+                const repStart = rep.dateFrom || rep.date;
+                const repEnd = rep.dateTo || rep.date;
+
+                let matchDateFrom = true;
+                let matchDateTo = true;
+
+                if (dateFrom) {
+                    matchDateFrom = repEnd >= dateFrom;
+                }
+                if (dateTo) {
+                    matchDateTo = repStart <= dateTo;
+                }
 
                 if(matchTrainer && matchDateFrom && matchDateTo) {
                     if((rep.type === 'weekly' && (filterType === 'both' || filterType === 'weekly')) ||
@@ -1710,7 +1719,7 @@
             options: {
                 responsive: true,
                 scales: {
-                    y: { min: 0, max: 20 }
+                    y: { min: 0, max: 10 }
                 }
             }
         });
@@ -1733,8 +1742,18 @@
 
             snap.forEach(child => {
                 const rep = child.val();
-                const matchDateFrom = !dateFrom || rep.date >= dateFrom;
-                const matchDateTo = !dateTo || rep.date <= dateTo;
+                const repStart = rep.dateFrom || rep.date;
+                const repEnd = rep.dateTo || rep.date;
+
+                let matchDateFrom = true;
+                let matchDateTo = true;
+
+                if (dateFrom) {
+                    matchDateFrom = repEnd >= dateFrom;
+                }
+                if (dateTo) {
+                    matchDateTo = repStart <= dateTo;
+                }
 
                 if (matchDateFrom && matchDateTo && rep.trainerName && selectedTrainers.includes(rep.trainerName)) {
                     if (!statsMap[rep.trainerName]) {
