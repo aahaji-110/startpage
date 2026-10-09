@@ -1,8 +1,3 @@
-أتممت التعديل المطلوب بدقة، حيث أضفت خانة **Discussion** ضمن تفاصيل الأعمال الإدارية في قسم تقييم المدربين وأدخلتها ضمن حساب المجموع التلقائي للأعمال الإدارية، مع ترك باقي الحقول ووظائف النظام دون أي تغيير.
-
-إليك الملف المُحدث جاهزاً:
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -624,10 +619,6 @@
                     <input type="number" id="task_discussion" min="0" value="0" oninput="calculateTotalAdminTasks()">
                 </div>
                 <div class="task-input-box">
-                    <label>Discussion</label>
-                    <input type="number" id="task_discussion_new" min="0" value="0" oninput="calculateTotalAdminTasks()">
-                </div>
-                <div class="task-input-box">
                     <label>التكت</label>
                     <input type="number" id="task_ticket" min="0" value="0" oninput="calculateTotalAdminTasks()">
                 </div>
@@ -1157,7 +1148,7 @@
     window.calculateTotalAdminTasks = () => {
         const taskIds = [
             'task_ask', 'task_give_role', 'task_discisions',
-            'task_recall', 'task_discussion', 'task_discussion_new', 'task_ticket',
+            'task_recall', 'task_discussion', 'task_ticket',
             'task_wings', 'task_hesba', 'task_extra'
         ];
         let sum = 0;
@@ -1302,7 +1293,7 @@
         
         const taskIds = [
             'task_ask', 'task_give_role', 'task_discisions',
-            'task_recall', 'task_discussion', 'task_discussion_new', 'task_ticket',
+            'task_recall', 'task_discussion', 'task_ticket',
             'task_wings', 'task_hesba', 'task_extra'
         ];
         taskIds.forEach(id => document.getElementById(id).value = '0');
@@ -1350,7 +1341,6 @@
             discisions: parseInt(document.getElementById('task_discisions').value) || 0,
             recall: parseInt(document.getElementById('task_recall').value) || 0,
             discussion: parseInt(document.getElementById('task_discussion').value) || 0,
-            discussionNew: parseInt(document.getElementById('task_discussion_new').value) || 0,
             ticket: parseInt(document.getElementById('task_ticket').value) || 0,
             wings: parseInt(document.getElementById('task_wings').value) || 0,
             hesba: parseInt(document.getElementById('task_hesba').value) || 0,
@@ -1671,7 +1661,6 @@
                 document.getElementById('task_discisions').value = rep.tasksDetail.discisions || 0;
                 document.getElementById('task_recall').value = rep.tasksDetail.recall || 0;
                 document.getElementById('task_discussion').value = rep.tasksDetail.discussion || 0;
-                document.getElementById('task_discussion_new').value = rep.tasksDetail.discussionNew || 0;
                 document.getElementById('task_ticket').value = rep.tasksDetail.ticket || 0;
                 document.getElementById('task_wings').value = rep.tasksDetail.wings || 0;
                 document.getElementById('task_hesba').value = rep.tasksDetail.hesba || 0;
